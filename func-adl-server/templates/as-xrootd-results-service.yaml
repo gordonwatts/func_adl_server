@@ -1,0 +1,20 @@
+# The xROOTT server needs to be declared as a service for this puppy to work.
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-xrootd-results
+  labels:
+    app: {{ template "func-adl-server.name" . }}
+    chart: {{ template "func-adl-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 1094
+      targetPort: xroot
+      protocol: TCP
+      name: xroot
+  selector:
+    app: {{ template "func-adl-server.name" . }}
+    release: {{ .Release.Name }}

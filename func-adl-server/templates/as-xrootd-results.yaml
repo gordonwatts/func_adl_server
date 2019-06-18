@@ -1,0 +1,28 @@
+# Run a simple version of rabbitmq
+# TODO: need live tests, etc., so k knows when it is ready to party
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "func-adl-server.fullname" . }}-xrootd-results
+  labels:
+    app: {{ template "func-adl-server.name" . }}
+    chart: {{ template "func-adl-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    # Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
+    matchLabels:
+      app: xrootd-results
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: xrootd-results
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: as-xrootd-results
+          image: gordonwatts/adl_func_results_xrootd:v0.0.1
+          imagePullPolicy: IfNotPresent

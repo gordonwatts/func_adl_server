@@ -1,0 +1,50 @@
+# Run the executable in the old-style binary files.
+# TODO: How do we prevent this from starting until mongodb and rabbitmq are up and running?
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "func-adl-server.fullname" . }}-xaod-runner
+  labels:
+    app: {{ template "func-adl-server.name" . }}
+    chart: {{ template "func-adl-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    # Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
+    matchLabels:
+      app: {{ template "func-adl-server.name" . }}-xaod-runner
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "func-adl-server.name" . }}-xaod-runner
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: gordonwatts/func_adl_cpp_runner:v0.0.1
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+            - -c 
+            - "source /home/atlas/release_setup.sh; python cmd_runner_rabbit.py {{ .Release.Name }}-rabbitmq {{ .Release.Name }}-xrootd-results user RABBITMQ_PASSWORD"
+          env:
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-rabbitmq
+                  key: rabbitmq-password
+          volumeMounts:
+            - mountPath: /cache
+              name: cpp-cache
+            - mountPath: /data
+              name: rucio-data
+      volumes:
+        - name: cpp-cache
+          hostPath:
+            path: {{ .Values.func_adl.cpp_cache }}
+        - name: rucio-data
+          hostPath:
+            path: {{ .Values.rucio.local_data_cache }}

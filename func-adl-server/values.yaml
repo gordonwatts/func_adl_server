@@ -23,6 +23,8 @@ tolerations: []
 affinity: {}
 
 # Configure the mongodb guy
+# TODO: Store the database somewhere that will stick around between invokations.
+#       Needs to be around as long as we store results in the xrootd results guy.
 mongodb:
   persistence:
     enabled: false

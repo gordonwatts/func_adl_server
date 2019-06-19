@@ -1,0 +1,58 @@
+# Initial request from outside world arrives on rabbitmq. We figure out we have the answer, and if
+# not we pass it on to the next step and update the db and let the caller know it is pending.
+# TODO: How do we prevent this from starting until mongodb and rabbitmq are up and running?
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "func-adl-server.fullname" . }}-rucio-downloader
+  labels:
+    app: {{ template "func-adl-server.name" . }}
+    chart: {{ template "func-adl-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    # Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
+    matchLabels:
+      app: {{ template "func-adl-server.name" . }}-rucio-downloader
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "func-adl-server.name" . }}-rucio-downloader
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: gordonwatts/desktop-rucio:alpha-0.1.3
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+          args:
+            - startup_rabbit.sh
+            - {{ .Values.rucio.username }}
+            - {{ .Values.rucio.certpass }}
+            - {{ .Values.rucio.VOMS }}
+            - file:///data
+            - {{ .Release.Name }}-rabbitmq
+            - user
+            - RABBITMQ_PASSWORD
+          env:
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-rabbitmq
+                  key: rabbitmq-password
+          volumeMounts:
+            - mountPath: /root/rawcert
+              name: certs
+            - mountPath: /data
+              name: rucio-data
+      volumes:
+        - name: rucio-data
+          hostPath:
+            path: {{ .Values.rucio.local_data_cache }}
+        - name: certs
+          hostPath:
+            path: {{ .Values.rucio.local_cert_dir }}

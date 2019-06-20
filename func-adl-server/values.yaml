@@ -4,13 +4,13 @@ service:
   type: ClusterIP
   port: 8000
 
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-  path: /
-  # hosts:
-  #   - localhost
+external_interface:
+  # When we have to re-write a url for external viewing, what should we use as our cluster node name?
+  node_name: localhost
+  # Expose xrootd with our results on this port externally.
+  xrootd_port: 30001
+  # Expose web service where queries are submitted
+  web_port: 30000
 
 resources: {}
   # Not going to restrict here: this server should be able to run on a laptop

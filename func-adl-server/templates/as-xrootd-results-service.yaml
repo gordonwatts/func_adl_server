@@ -12,7 +12,7 @@ spec:
   type: NodePort
   ports:
     - port: 1094
-      nodePort: 30001
+      nodePort: {{ .Values.external_interface.xrootd_port }}
       targetPort: 1094
       protocol: TCP
   selector:

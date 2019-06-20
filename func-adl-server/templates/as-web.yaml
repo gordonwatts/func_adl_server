@@ -42,3 +42,5 @@ spec:
               value: user
             - name: RABBIT_NODE
               value: {{ .Release.Name }}-rabbitmq
+            - name: FILE_URL
+              value: root://{{ .Values.external_interface.node_name}}:{{ .Values.external_interface.xrootd_port }}//

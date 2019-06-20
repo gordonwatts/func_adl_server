@@ -12,7 +12,7 @@ spec:
   type: NodePort
   ports:
     - port: 8000
-      nodePort: 30000
+      nodePort: {{ .Values.external_interface.web_port }}
       targetPort: 8000
       protocol: TCP
   selector:

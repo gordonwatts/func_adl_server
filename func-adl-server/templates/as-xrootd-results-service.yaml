@@ -2,17 +2,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-xrootd-results
+  name: {{ template "func-adl-server.fullname" . }}-xrootd-results
   labels:
     app: {{ template "func-adl-server.name" . }}
     chart: {{ template "func-adl-server.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  # TODO: Need to figure out how to use NodePort (or similar) to expose this to the outside world.
   type: NodePort
   ports:
     - port: 1094
       nodePort: 30001
+      targetPort: 1094
+      protocol: TCP
   selector:
-    name: {{ .Release.Name }}-xrootd-results
+    app: {{ template "func-adl-server.name" . }}-xrootd-results
+    release: {{ .Release.Name }}

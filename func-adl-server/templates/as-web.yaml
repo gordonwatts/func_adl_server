@@ -32,13 +32,14 @@ spec:
             - query_web.py
           ports:
             - containerPort: 8000
+              hostPort: 8090
           env:
-            - name: RABBITMQ_PASS
+            - name: RABBIT_PASS
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-rabbitmq
                   key: rabbitmq-password
-            - name: RABBITMQ_USER
+            - name: RABBIT_USER
               value: user
-            - name: RABBITMQ_NODE
+            - name: RABBIT_NODE
               value: {{ .Release.Name }}-rabbitmq

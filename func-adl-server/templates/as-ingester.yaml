@@ -1,42 +1,42 @@
-# # Initial request from outside world arrives on rabbitmq. We figure out we have the answer, and if
-# # not we pass it on to the next step and update the db and let the caller know it is pending.
-# # TODO: How do we prevent this from starting until mongodb and rabbitmq are up and running?
-# apiVersion: apps/v1beta2
-# kind: Deployment
-# metadata:
-#   name: {{ template "func-adl-server.fullname" . }}-ingester
-#   labels:
-#     app: {{ template "func-adl-server.name" . }}
-#     chart: {{ template "func-adl-server.chart" . }}
-#     release: {{ .Release.Name }}
-#     heritage: {{ .Release.Service }}
-# spec:
-#   replicas: 1
-#   selector:
-#     # Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
-#     matchLabels:
-#       app: {{ template "func-adl-server.name" . }}-ingester
-#       release: {{ .Release.Name }}
-#   template:
-#     metadata:
-#       labels:
-#         app: {{ template "func-adl-server.name" . }}-ingester
-#         release: {{ .Release.Name }}
-#     spec:
-#       containers:
-#         - name: {{ .Chart.Name }}
-#           image: gordonwatts/func_adl_request_broker:v0.0.1
-#           imagePullPolicy: IfNotPresent
-#           command:
-#             - python
-#             - request_ingester_rabbit.py
-#             - {{ .Release.Name }}-rabbitmq
-#             - {{ .Release.Name }}-mongodb
-#             - user
-#             - RABBITMQ_PASSWORD
-#           env:
-#             - name: RABBITMQ_PASSWORD
-#               valueFrom:
-#                 secretKeyRef:
-#                   name: {{ .Release.Name }}-rabbitmq
-#                   key: rabbitmq-password
+# Initial request from outside world arrives on rabbitmq. We figure out we have the answer, and if
+# not we pass it on to the next step and update the db and let the caller know it is pending.
+# TODO: How do we prevent this from starting until mongodb and rabbitmq are up and running?
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "func-adl-server.fullname" . }}-ingester
+  labels:
+    app: {{ template "func-adl-server.name" . }}
+    chart: {{ template "func-adl-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    # Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
+    matchLabels:
+      app: {{ template "func-adl-server.name" . }}-ingester
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "func-adl-server.name" . }}-ingester
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: gordonwatts/func_adl_request_broker:v0.0.1
+          imagePullPolicy: IfNotPresent
+          command:
+            - python
+            - request_ingester_rabbit.py
+            - {{ .Release.Name }}-rabbitmq
+            - {{ .Release.Name }}-mongodb
+            - user
+            - RABBITMQ_PASSWORD
+          env:
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-rabbitmq
+                  key: rabbitmq-password

@@ -1,0 +1,44 @@
+# Very simple web server to land ast's from the outside world.
+# TODO: How do we prevent this from starting until mongodb and rabbitmq are up and running?
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "func-adl-server.fullname" . }}-web
+  labels:
+    app: {{ template "func-adl-server.name" . }}
+    chart: {{ template "func-adl-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    # TODO: Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
+    matchLabels:
+      app: {{ template "func-adl-server.name" . }}-web
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "func-adl-server.name" . }}-web
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: gordonwatts/func_adl_request_broker:v0.0.1
+          imagePullPolicy: IfNotPresent
+          command:
+            - hug
+            - -f
+            - query_web.py
+          ports:
+            - containerPort: 8000
+          env:
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-rabbitmq
+                  key: rabbitmq-password
+            - name: RABBITMQ_USER
+              value: user
+            - name: RABBITMQ_NODE
+              value: {{ .Release.Name }}-rabbitmq

@@ -26,3 +26,5 @@ spec:
         - name: as-xrootd-results
           image: gordonwatts/adl_func_results_xrootd:v0.0.1
           imagePullPolicy: IfNotPresent
+          cports:
+            - containerPort: 1094

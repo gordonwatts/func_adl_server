@@ -29,7 +29,7 @@ spec:
           command:
             - /bin/bash
             - -c 
-            - "source /home/atlas/release_setup.sh; python cmd_runner_rabbit.py {{ .Release.Name }}-rabbitmq {{ .Release.Name }}-xrootd-results user RABBITMQ_PASSWORD"
+            - "source /home/atlas/release_setup.sh; python cmd_runner_rabbit.py {{ .Release.Name }}-rabbitmq {{ template "func-adl-server.fullname" . }}-xrootd-results user RABBITMQ_PASSWORD >> log.txt 2>&1"
           env:
             - name: RABBITMQ_PASSWORD
               valueFrom:

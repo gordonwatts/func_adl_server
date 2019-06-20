@@ -32,7 +32,6 @@ spec:
             - query_web.py
           ports:
             - containerPort: 8000
-              hostPort: 8090
           env:
             - name: RABBIT_PASS
               valueFrom:

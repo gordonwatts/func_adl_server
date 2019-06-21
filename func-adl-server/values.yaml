@@ -1,9 +1,5 @@
 # Default values for func-adl-server.
 
-service:
-  type: ClusterIP
-  port: 8000
-
 external_interface:
   # When we have to re-write a url for external viewing, what should we use as our cluster node name?
   node_name: localhost
@@ -11,16 +7,6 @@ external_interface:
   xrootd_port: 30001
   # Expose web service where queries are submitted
   web_port: 30000
-
-resources: {}
-  # Not going to restrict here: this server should be able to run on a laptop
-  # and on bigger iron.
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
 
 # Configure the mongodb guy
 # TODO: Store the database somewhere that will stick around between invokations.

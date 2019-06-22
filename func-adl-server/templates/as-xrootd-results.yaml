@@ -28,3 +28,10 @@ spec:
           imagePullPolicy: IfNotPresent
           cports:
             - containerPort: 1094
+          volumeMounts:
+            - mountPath: /data/xrd
+              name: xrootd-cache
+      volumes:
+        - name: xrootd-cache
+          hostPath:
+            path: {{ .Values.func_adl.results.cache }}

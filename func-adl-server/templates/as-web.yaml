@@ -45,4 +45,4 @@ spec:
             - name: FILE_URL
               value: root://{{ .Values.external_interface.node_name}}:{{ .Values.external_interface.xrootd_port }}//
             - name: LOCAL_FILE_URL
-              value: file://{{ .Values.func_adl.results.local_machine_prefix }}              
+              value: {{ .Values.func_adl.results.local_machine_prefix }}              

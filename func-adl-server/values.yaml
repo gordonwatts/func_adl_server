@@ -21,3 +21,11 @@ mongodb:
 # TODO: this does not alter the password.
 rabbitmq:
   password: leftfoot1
+
+# The default container tags used to power this.
+images:
+  func_adl: gordonwatts/func_adl:latest
+  desktop_rucio: gordonwatts/desktop-rucio:latest
+  func_adl_utils: gordonwatts/func_adl_request_broker:latest
+  xrootd_results: gordonwatts/func_adl_results_xrootd:latest
+  xaod_runner: gordonwatts/func_adl_cpp_runner:latest

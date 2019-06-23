@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: as-web
-          image: gordonwatts/func_adl_request_broker:v0.0.1
+          image:  {{ .Values.images.func_adl_utils }}
           imagePullPolicy: IfNotPresent
           command:
             - hug

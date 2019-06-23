@@ -43,6 +43,13 @@ You are now ready to start:
 helm install -f local_setup.yaml https://github.com/gordonwatts/func_adl_server/releases/download/v0.1.0/func-adl-server-0.1.0.tgz
 ```
 
+You'll have to give it a few minutes. Especially if this is the first time you've run it (it has a bunch of data to pull from docker hub).
+Wait until `kubectl get pod` looks healthy. You can point your web browser at `http://localhost:30000`. If all went well you should see a 404 error
+along with a dump of the `query` API command. This indicates the app is up, though other parts could still be unhealthy...
+
+K8 is not, in general, friendly to your laptop battery. I'd suggest turning it off if you aren't using it. With this app running this takes up
+almost 10% of CPU, and the CPU can't drop below about 3 GHz (turn it off and I'm down around 1.2 GHz).
+
 # Testing
 
 This has been tested on (as a host):

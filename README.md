@@ -37,6 +37,12 @@ Note: For items starting with `path` (e.g. `<>`), the format is a bit odd. These
 - Mac: write a normal path
 - Linux: write a normal path
 
+You are now ready to start:
+
+```
+helm install -f local_setup.yaml https://github.com/gordonwatts/func_adl_server/releases/download/v0.1.0/func-adl-server-0.1.0.tgz
+```
+
 # Testing
 
 This has been tested on (as a host):

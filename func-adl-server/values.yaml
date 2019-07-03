@@ -9,16 +9,11 @@ external_interface:
   web_port: 30000
 
 # Configure the mongodb guy
-# TODO: Store the database somewhere that will stick around between invokations.
-#       Needs to be around as long as we store results in the xrootd results guy.
 mongodb:
   persistence:
     enabled: false
   usePassword: false
 
-# TODO: if we do an "upgrade" of the helm charte, a new secret for rabbitmq is generated, which is distributed to only
-# the new apps. If rabbitmq does not restart, it uses old scret and no one can get in anymore.
-# TODO: this does not alter the password.
 rabbitmq:
   password: leftfoot1
 

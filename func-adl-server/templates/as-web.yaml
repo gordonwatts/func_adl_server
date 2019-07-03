@@ -1,5 +1,4 @@
 # Very simple web server to land ast's from the outside world.
-# TODO: How do we prevent this from starting until mongodb and rabbitmq are up and running?
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -12,7 +11,6 @@ metadata:
 spec:
   replicas: 1
   selector:
-    # TODO: Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
     matchLabels:
       app: {{ template "func-adl-server.name" . }}-web
       release: {{ .Release.Name }}

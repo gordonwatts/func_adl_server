@@ -1,6 +1,5 @@
 # Initial request from outside world arrives on rabbitmq. We figure out we have the answer, and if
 # not we pass it on to the next step and update the db and let the caller know it is pending.
-# TODO: How do we prevent this from starting until mongodb and rabbitmq are up and running?
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:

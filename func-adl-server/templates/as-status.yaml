@@ -1,6 +1,5 @@
 # The status updater. Can only be one. Resposible for collecting status
 # updates from through out the system and pushing them to the db.
-# TODO: How do we prevent this from starting until mongodb and rabbitmq are up and running?
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:

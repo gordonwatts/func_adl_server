@@ -1,5 +1,4 @@
 # Run a simple version of rabbitmq
-# TODO: need live tests, etc., so k knows when it is ready to party
 apiVersion: apps/v1
 kind: Deployment
 metadata:

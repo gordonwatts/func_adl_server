@@ -1,6 +1,5 @@
 # Writes the CPP files to a local cache - eventually will hold binary files (I hope)... then we don't
 # need to do it this way.
-# TODO: How do we prevent this from starting until mongodb and rabbitmq are up and running?
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:

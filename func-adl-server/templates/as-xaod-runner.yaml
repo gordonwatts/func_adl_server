@@ -1,5 +1,4 @@
 # Run the executable in the old-style binary files.
-# TODO: How do we prevent this from starting until mongodb and rabbitmq are up and running?
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:

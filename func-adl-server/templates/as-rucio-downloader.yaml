@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.images.desktop_rucio }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           command:
             - /bin/bash
           args:

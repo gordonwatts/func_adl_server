@@ -23,7 +23,7 @@ spec:
       containers:
         - name: as-web
           image:  {{ .Values.images.func_adl_utils }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           command:
             - hug
             - -f

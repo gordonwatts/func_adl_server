@@ -24,7 +24,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.images.xaod_runner }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           command:
             - /bin/bash
             - -c 

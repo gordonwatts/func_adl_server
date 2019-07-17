@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.images.func_adl }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           command:
             - python
             - translate_ast_to_cpp_rabbit.py 

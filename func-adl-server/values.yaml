@@ -18,7 +18,9 @@ rabbitmq:
   password: leftfoot1
 
 # The default container tags used to power this.
+# Pull policy translates to the usual Kubernetes policy.
 images:
+  pullPolicy:
   func_adl: gordonwatts/func_adl:latest
   desktop_rucio: gordonwatts/desktop-rucio:latest
   func_adl_utils: gordonwatts/func_adl_request_broker:latest

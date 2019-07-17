@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.images.func_adl_utils }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           command:
             - python
             - request_ingester_rabbit.py

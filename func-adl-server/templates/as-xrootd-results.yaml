@@ -24,7 +24,7 @@ spec:
       containers:
         - name: as-xrootd-results
           image: {{ .Values.images.xrootd_results }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
           cports:
             - containerPort: 1094
           volumeMounts:

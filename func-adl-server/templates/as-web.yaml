@@ -25,9 +25,16 @@ spec:
           image:  {{ .Values.images.func_adl_utils }}
           imagePullPolicy: {{ .Values.images.pullPolicy }}
           command:
-            - hug
-            - -f
-            - query_web.py
+            - gunicorn
+            - --bind
+            - 0.0.0.0:8000
+            - -w
+            - "4"
+            - --log-file
+            - "-"
+            - --log-level
+            - debug
+            - query_web:__hug_wsgi__
           ports:
             - containerPort: 8000
           env:

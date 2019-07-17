@@ -55,3 +55,7 @@ almost 10% of CPU, and the CPU can't drop below about 3 GHz (turn it off and I'm
 This has been tested on (as a host):
 
 - Windows 10
+
+# Packaging
+
+To package up use `helm package func_adl_server`.

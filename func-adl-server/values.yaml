@@ -14,8 +14,11 @@ mongodb:
     enabled: false
   usePassword: false
 
+# Use a username and password so we know how to get into the montior
+# port when we expose it. Username is "user".
 rabbitmq:
-  password: leftfoot1
+  rabbitmq:
+    password: leftfoot1
 
 # The default container tags used to power this.
 # Pull policy translates to the usual Kubernetes policy.

@@ -22,7 +22,10 @@ rabbitmq:
 images:
   pullPolicy:
   func_adl: gordonwatts/func_adl:latest
-  desktop_rucio: gordonwatts/desktop-rucio:latest
+  desktop_rucio: gordonwatts/func-adl-rucio:latest
   func_adl_utils: gordonwatts/func_adl_request_broker:latest
   xrootd_results: gordonwatts/func_adl_results_xrootd:latest
   xaod_runner: gordonwatts/func_adl_cpp_runner:latest
+
+scaling:
+  rucio_dwonloader: 2

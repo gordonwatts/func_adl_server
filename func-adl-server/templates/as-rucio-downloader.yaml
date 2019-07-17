@@ -10,7 +10,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.scaling.rucio_dwonloader }}
   selector:
     # Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
     matchLabels:
@@ -26,17 +26,14 @@ spec:
         - name: {{ .Chart.Name }}
           image: {{ .Values.images.desktop_rucio }}
           imagePullPolicy: {{ .Values.images.pullPolicy }}
-          command:
-            - /bin/bash
           args:
-            - startup_rabbit.sh
-            - {{ .Values.rucio.username }}
-            - {{ .Values.rucio.certpass }}
-            - {{ .Values.rucio.VOMS }}
-            - file:///data
+            - /data
             - {{ .Release.Name }}-rabbitmq
             - user
             - RABBITMQ_PASSWORD
+            - {{ .Values.rucio.username }}
+            - {{ .Values.rucio.VOMS }}
+            - {{ .Values.rucio.certpass }}
           env:
             - name: RABBITMQ_PASSWORD
               valueFrom:
@@ -44,7 +41,7 @@ spec:
                   name: {{ .Release.Name }}-rabbitmq
                   key: rabbitmq-password
           volumeMounts:
-            - mountPath: /root/rawcert
+            - mountPath: /certs
               name: certs
             - mountPath: /data
               name: rucio-data

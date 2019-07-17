@@ -32,3 +32,4 @@ images:
 
 scaling:
   rucio_dwonloader: 2
+  axod_runner: 4

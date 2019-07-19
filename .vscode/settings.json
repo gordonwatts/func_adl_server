@@ -1,6 +1,14 @@
 {
     "cSpell.words": [
+        "DAOD",
+        "EXOT",
+        "NNPDF",
+        "ROOTT",
+        "Topo",
         "aiohttp",
-        "asyncio"
-    ]
+        "asyncio",
+        "ltlow",
+        "r'localds"
+    ],
+    "python.testing.autoTestDiscoverOnSaveEnabled": false
 }

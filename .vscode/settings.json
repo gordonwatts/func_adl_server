@@ -2,13 +2,26 @@
     "cSpell.words": [
         "DAOD",
         "EXOT",
+        "GRIDDS",
         "NNPDF",
         "ROOTT",
         "Topo",
+        "VOMS",
         "aiohttp",
         "asyncio",
+        "axod",
+        "certpass",
+        "gordo",
+        "gwatts",
+        "kubectl",
         "ltlow",
-        "r'localds"
+        "mongodb",
+        "r'localds",
+        "rabbitmq",
+        "rucio",
+        "usercert",
+        "xaod",
+        "xrootd"
     ],
     "python.testing.autoTestDiscoverOnSaveEnabled": false
 }

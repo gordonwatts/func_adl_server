@@ -43,5 +43,5 @@ spec:
               name: cpp-cache
       volumes:
         - name: cpp-cache
-          hostPath:
-            path: {{ .Values.func_adl.cpp_cache }}
+          persistentVolumeClaim:
+            claimName: {{ template "func-adl-server.fullname" . }}-cpp-cache

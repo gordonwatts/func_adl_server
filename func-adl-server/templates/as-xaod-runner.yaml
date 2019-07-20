@@ -42,8 +42,8 @@ spec:
               name: rucio-data
       volumes:
         - name: cpp-cache
-          hostPath:
-            path: {{ .Values.func_adl.cpp_cache }}
+          persistentVolumeClaim:
+            claimName: {{ template "func-adl-server.fullname" . }}-cpp-cache
         - name: rucio-data
           hostPath:
             path: {{ .Values.rucio.local_data_cache }}

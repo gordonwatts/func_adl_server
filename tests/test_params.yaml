@@ -8,8 +8,6 @@ rucio:
   local_cert_dir: /C/Users/gordo/OneDrive/.ssh/rucio-config/usercert
 
 func_adl:
-  # This will keep pre-generated C++ around between invocations
-  cpp_cache: /C/Users/gordo/Documents/Code/IRIS-HEP/func-adl-server-cache/cpp
   # Results of the query calculations
   results:
     cache: /C/Users/gordo/Documents/Code/IRIS-HEP/func-adl-server-cache/results

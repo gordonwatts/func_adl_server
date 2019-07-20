@@ -32,5 +32,4 @@ spec:
               name: xrootd-cache
       volumes:
         - name: xrootd-cache
-          hostPath:
-            path: {{ .Values.func_adl.results.cache }}
+          emptyDir: {}

@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.scaling.axod_runner }}
+  replicas: {{ .Values.scaling.xaod_runner }}
   selector:
     # Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
     matchLabels:

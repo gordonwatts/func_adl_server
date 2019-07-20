@@ -31,5 +31,7 @@ images:
   xaod_runner: gordonwatts/func_adl_cpp_runner:latest
 
 scaling:
-  rucio_dwonloader: 2
-  axod_runner: 4
+  # For a running server 2-4 depending on your network connection
+  rucio_downloader: 1
+  # Depends how busy things are - but a few.
+  xaod_runner: 1

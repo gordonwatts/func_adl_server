@@ -10,7 +10,7 @@ chart_name = 'func-adl-testing-server'
 # If there is already something with this name present, then just use it.
 # For real testing this probably isn't the best, but for developing tests, etc.,
 # this will be a lot faster. Normally set to True.
-restart_if_running = False
+restart_if_running = True
 
 def is_chart_running(name:str):
     'Is a charge of name `name` running?'
@@ -75,6 +75,7 @@ def start_helm_chart():
     # Now, wait until it is up and running. The initial sleep is because if we don't, the containers
     # may not have status associated with them!
     logging.info(f'Waiting until all pods for chart {chart_name} are ready.')
+    time.sleep(20)
     while True:
         time.sleep(10)
         status = get_pod_status(chart_name)

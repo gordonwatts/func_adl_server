@@ -31,9 +31,11 @@ spec:
             - {{ .Release.Name }}-rabbitmq
             - user
             - RABBITMQ_PASSWORD
+{{- if and .Values.rucio.username .Values.rucio.VOMS .Values.rucio.certpass .Values.rucio.local_cert_dir }}
             - {{ .Values.rucio.username }}
             - {{ .Values.rucio.VOMS }}
             - {{ .Values.rucio.certpass }}
+{{- end }}
           env:
             - name: RABBITMQ_PASSWORD
               valueFrom:
@@ -41,8 +43,10 @@ spec:
                   name: {{ .Release.Name }}-rabbitmq
                   key: rabbitmq-password
           volumeMounts:
+{{- if .Values.rucio.local_cert_dir }}
             - mountPath: /certs
               name: certs
+{{- end }}
             - mountPath: /data
               name: rucio-data
       volumes:
@@ -54,6 +58,8 @@ spec:
           persistentVolumeClaim:
             claimName: {{ template "func-adl-server.fullname" . }}-rucio-data
 {{- end }}
+{{- if .Values.rucio.local_cert_dir }}
         - name: certs
           hostPath:
             path: {{ .Values.rucio.local_cert_dir }}
+{{- end }}

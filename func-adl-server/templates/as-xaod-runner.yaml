@@ -45,5 +45,10 @@ spec:
           persistentVolumeClaim:
             claimName: {{ template "func-adl-server.fullname" . }}-cpp-cache
         - name: rucio-data
+{{- if .Values.rucio.local_data_cache }}
           hostPath:
             path: {{ .Values.rucio.local_data_cache }}
+{{- else }}
+          persistentVolumeClaim:
+            claimName: {{ template "func-adl-server.fullname" . }}-rucio-data
+{{- end }}

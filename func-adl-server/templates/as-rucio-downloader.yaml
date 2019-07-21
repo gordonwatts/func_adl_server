@@ -47,8 +47,13 @@ spec:
               name: rucio-data
       volumes:
         - name: rucio-data
+{{- if .Values.rucio.local_data_cache }}
           hostPath:
             path: {{ .Values.rucio.local_data_cache }}
+{{- else }}
+          persistentVolumeClaim:
+            claimName: {{ template "func-adl-server.fullname" . }}-rucio-data
+{{- end }}
         - name: certs
           hostPath:
             path: {{ .Values.rucio.local_cert_dir }}

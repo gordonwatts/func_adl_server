@@ -12,6 +12,7 @@ The chart has the following parameters:
 | rucio.local_cert_dir | A local machine directory that contains GRID certificates (`userkey.pem` and `usercert.pem`). Required to access the GRID to download new datasets. |
 | rucio.certpass | The password to access the `userkey.pem` certificate. Required to access the GRID to download new datasets. |
 | rucio.VOMS | The VOMS that should be connected to when accessing the GRID with the given certificate. Required to access the GRID to download new datasets. |
+| rucio.local_data_cache | A `hostPath` for storing GRID data that has been downloaded. Perhaps only good for test machines. Uses the standard format for kubectl paths (e.g. `/C/Users/gordo/Documents/GRIDDS`). Not required - the `default` storage class persistent volume will be reserved if this isn't specified.
 
 Some notes:
 1. If you don't specify all the `rucio.XXX` parameters you can only access the test datasets (see below).

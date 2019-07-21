@@ -9,6 +9,10 @@ external_interface:
   # Expose web service where queries are submitted
   web_port: 30000
 
+rucio:
+  # Just make sure that rucio exists. Otherwise the logic can get very complex
+  dummy: False
+
 # Configure the mongodb guy
 # Persistence is false b.c. true does not work on Windows at the moment.
 mongodb:

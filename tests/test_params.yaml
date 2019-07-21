@@ -20,19 +20,5 @@ func_adl:
 # Use a custom port incase it is running against something else!
 external_interface:
   xrootd_port: 31001
+  xrootd_http_port: 31002
   web_port: 31000
-
-images:
-  pullPolicy: IfNotPresent
-#   xaod_runner: func_adl_cpp_runner:latest
-#   desktop_rucio: func-adl-rucio:latest
-
-mongodb:
-  image:
-    pullPolicy: IfNotPresent
-
-# Use a username and password so we know how to get into the monitor
-# port when we expose it. Username is "user".
-rabbitmq:
-  image:
-    pullPolicy: IfNotPresent

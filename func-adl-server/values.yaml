@@ -3,12 +3,14 @@
 external_interface:
   # When we have to re-write a url for external viewing, what should we use as our cluster node name?
   node_name: localhost
-  # Expose xrootd with our results on this port externally.
+  # Expose xrootd with our results on these ports externally (first is for xrootd, second is http access)
   xrootd_port: 30001
+  xrootd_http_port: 30002
   # Expose web service where queries are submitted
   web_port: 30000
 
 # Configure the mongodb guy
+# Persistence is false b.c. true does not work on Windows at the moment.
 mongodb:
   persistence:
     enabled: false

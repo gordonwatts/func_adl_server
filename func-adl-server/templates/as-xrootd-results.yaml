@@ -26,7 +26,10 @@ spec:
           image: {{ .Values.images.xrootd_results }}
           imagePullPolicy: {{ .Values.images.pullPolicy }}
           cports:
-            - containerPort: 1094
+            - name: xrootd
+              containerPort: 1094
+            - name: http
+              containerPort: 8001
           volumeMounts:
             - mountPath: /data/xrd
               name: xrootd-cache

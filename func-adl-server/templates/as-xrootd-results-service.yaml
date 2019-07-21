@@ -11,9 +11,13 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 1094
+    - name: xrootd
+      port: 1094
       nodePort: {{ .Values.external_interface.xrootd_port }}
-      targetPort: 1094
+      protocol: TCP
+    - name: httpdavx
+      port: 8001
+      nodePort: {{ .Values.external_interface.xrootd_http_port }}
       protocol: TCP
   selector:
     app: {{ template "func-adl-server.name" . }}-xrootd-results

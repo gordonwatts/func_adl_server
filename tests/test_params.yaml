@@ -1,12 +1,4 @@
-# Run on the laptop
-
-rucio:
-  username: gwatts
-  certpass: mass2000
-  VOMS: atlas
-  local_cert_dir: /C/Users/gordo/OneDrive/.ssh/rucio-config/usercert
-  local_data_cache: /C/Users/gordo/Documents/GRIDDS
-
+# Boot up a default configuration to run the tests.
 # Use a custom port in case it is running with something else on the same machine!
 external_interface:
   xrootd_port: 31001

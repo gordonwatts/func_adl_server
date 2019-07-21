@@ -4,6 +4,19 @@ k8 and helm files
 
 # Usage
 
+The chart has the following parameters:
+
+| Parameter Name | Description |
+| -------------- | ----------- |
+| rucio.username | The `rucio` username for accessing the grid. Required to access the GRID to download new datasets. |
+| rucio.local_cert_dir | A local machine directory that contains GRID certificates (`userkey.pem` and `usercert.pem`). Required to access the GRID to download new datasets. |
+| rucio.certpass | The password to access the `userkey.pem` certificate. Required to access the GRID to download new datasets. |
+| rucio.VOMS | The VOMS that should be connected to when accessing the GRID with the given certificate. Required to access the GRID to download new datasets. |
+
+Some notes:
+1. If you don't specify all the `rucio.XXX` parameters you can only access the test datasets (see below).
+
+
 Bringing up the `func-adl-server` on a Docker Desktop one cluster node isn't very difficult. But since this needs a GRID security context and you don't want to lose downloads,
 it is important to configure some local storage space. Create a files called `local_setup.yaml` and populate it as follows (fill in everything between the "<...>" - hopefully this is
 all self explainitory):

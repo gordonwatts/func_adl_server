@@ -11,6 +11,7 @@
         "asyncio",
         "axod",
         "certpass",
+        "datasets",
         "gordo",
         "gwatts",
         "kubectl",
@@ -20,6 +21,7 @@
         "rabbitmq",
         "rucio",
         "usercert",
+        "userkey",
         "xaod",
         "xrootd"
     ],

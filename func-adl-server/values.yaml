@@ -5,7 +5,7 @@ external_interface:
   node_name: localhost
   # Expose xrootd with our results on these ports externally (first is for xrootd, second is http access)
   xrootd_port: 30001
-  xrootd_http_port: 30002
+  results_http_port: 30002
   # Expose web service where queries are submitted
   web_port: 30000
 
@@ -31,6 +31,7 @@ images:
   func_adl_utils: gordonwatts/func_adl_request_broker:latest
   xrootd_results: gordonwatts/func_adl_results_xrootd:latest
   xaod_runner: gordonwatts/func_adl_cpp_runner:latest
+  results_web_server: nginx:stable
 
 scaling:
   # For a running server 2-4 depending on your network connection

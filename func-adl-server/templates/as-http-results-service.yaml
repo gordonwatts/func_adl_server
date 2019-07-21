@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "func-adl-server.fullname" . }}-xrootd-results
+  name: {{ template "func-adl-server.fullname" . }}-http-results
   labels:
     app: {{ template "func-adl-server.name" . }}
     chart: {{ template "func-adl-server.chart" . }}
@@ -11,10 +11,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - name: xrootd
-      port: 1094
-      nodePort: {{ .Values.external_interface.xrootd_port }}
+    - name: http
+      port: 80
+      nodePort: {{ .Values.external_interface.results_http_port }}
       protocol: TCP
   selector:
-    app: {{ template "func-adl-server.name" . }}-xrootd-results
+    app: {{ template "func-adl-server.name" . }}-http-results
     release: {{ .Release.Name }}

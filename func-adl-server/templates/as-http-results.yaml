@@ -1,8 +1,8 @@
-# Run a simple version of rabbitmq
-apiVersion: apps/v1
+# Run a simple nginx server to dish out results as http read-only.
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "func-adl-server.fullname" . }}-xrootd-results
+  name: {{ template "func-adl-server.fullname" . }}-http-results
   labels:
     app: {{ template "func-adl-server.name" . }}
     chart: {{ template "func-adl-server.chart" . }}
@@ -11,25 +11,23 @@ metadata:
 spec:
   replicas: 1
   selector:
-    # Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
     matchLabels:
-      app: {{ template "func-adl-server.name" . }}-xrootd-results
+      app: {{ template "func-adl-server.name" . }}-http-results
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "func-adl-server.name" . }}-xrootd-results
+        app: {{ template "func-adl-server.name" . }}-http-results
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: as-xrootd-results
-          image: {{ .Values.images.xrootd_results }}
+        - name: as-http-results
+          image:  {{ .Values.images.results_web_server }}
           imagePullPolicy: {{ .Values.images.pullPolicy }}
-          cports:
-            - name: xrootd
-              containerPort: 1094
+          ports:
+            - containerPort: 80
           volumeMounts:
-            - mountPath: /data/xrd
+            - mountPath: /usr/share/nginx/html
               name: xrootd-cache
       volumes:
         - name: xrootd-cache

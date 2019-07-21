@@ -4,21 +4,11 @@ rucio:
   username: gwatts
   certpass: mass2000
   VOMS: atlas
-  local_data_cache: /C/Users/gordo/Documents/GRIDDS
   local_cert_dir: /C/Users/gordo/OneDrive/.ssh/rucio-config/usercert
+  local_data_cache: /C/Users/gordo/Documents/GRIDDS
 
-func_adl:
-  # Results of the query calculations
-  results:
-    # cache: /C/Users/gordo/Documents/Code/IRIS-HEP/func-adl-server-cache/results
-    # # Define this so that the web server will return a local version of the path to the results.
-    # # Makes it possible to do a local file open for results. The most obvious thing is to
-    # # prefix the cache with "file://" on linux/mac and "file:///" on windows. Below is an example
-    # # from windows.
-    local_machine_prefix: file:///C:\Users\gordo\Documents\Code\IRIS-HEP\func-adl-server-cache\results\
-
-# Use a custom port incase it is running against something else!
+# Use a custom port in case it is running with something else on the same machine!
 external_interface:
   xrootd_port: 31001
-  xrootd_http_port: 31002
+  results_http_port: 31002
   web_port: 31000

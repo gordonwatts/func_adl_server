@@ -1,0 +1,17 @@
+# The PVC for the C++ code cache
+# This should have the same lifetime as the mongo-db has... If that is deleted or reset, then this should be as well.
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  labels:
+    app: {{ template "func-adl-server.name" . }}
+    chart: {{ template "func-adl-server.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "func-adl-server.fullname" . }}-results
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi

@@ -12,10 +12,10 @@ The chart has the following parameters:
 | rucio.local_cert_dir | A local machine directory that contains GRID certificates (`userkey.pem` and `usercert.pem`). Required to access the GRID to download new datasets. |
 | rucio.certpass | The password to access the `userkey.pem` certificate. Required to access the GRID to download new datasets. |
 | rucio.VOMS | The VOMS that should be connected to when accessing the GRID with the given certificate. Required to access the GRID to download new datasets. |
-| rucio.local_data_cache | A `hostPath` for storing GRID data that has been downloaded. Perhaps only good for test machines. Uses the standard format for kubectl paths (e.g. `/C/Users/gordo/Documents/GRIDDS`). Not required - the `default` storage class persistent volume will be reserved if this isn't specified.
+| rucio.local_data_cache | A `hostPath` for storing GRID data that has been downloaded. Perhaps only good for test machines. Uses the standard format for kubectl paths (e.g. `/C/Users/gordo/Documents/GRIDDS`). Not required - a `default` storage class persistent volume will be reserved if this isn't specified.
 
 Some notes:
-1. If you don't specify all the `rucio.XXX` parameters you can only access the test datasets (see below).
+1. If you don't specify all the `rucio.XXX` parameters you can only access the root:// datasets is possible.
 
 
 Bringing up the `func-adl-server` on a Docker Desktop one cluster node isn't very difficult. But since this needs a GRID security context and you don't want to lose downloads,
@@ -68,7 +68,7 @@ almost 10% of CPU, and the CPU can't drop below about 3 GHz (turn it off and I'm
 
 This has been tested on (as a host):
 
-- Windows 10
+- Windows 10, running `docker-desktop` with the `kubernetes` cluster enabled.
 
 Testing is done via `pytest`. Your machine needs a few prerequisties:
 

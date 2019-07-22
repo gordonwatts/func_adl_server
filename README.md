@@ -16,11 +16,11 @@ The chart has the following parameters:
 
 Some notes:
 1. If you don't specify all the `rucio.XXX` parameters you can only access the root:// datasets is possible.
-
-
-Bringing up the `func-adl-server` on a Docker Desktop one cluster node isn't very difficult. But since this needs a GRID security context and you don't want to lose downloads,
-it is important to configure some local storage space. Create a files called `local_setup.yaml` and populate it as follows (fill in everything between the "<...>" - hopefully this is
-all self explainitory):
+2. Bringing up the `func-adl-server` on a Docker Desktop one cluster node isn't very difficult.
+   But since this needs a GRID security context and you don't want to lose downloads, it is
+   important to configure some local storage space. Create a files called `local_setup.yaml`
+   and populate it as follows (fill in everything between the "<...>" - hopefully this is 
+   all self-explanatory):
 
 ```
 # Some not-to-be-shared info to run the service.
@@ -70,7 +70,7 @@ This has been tested on (as a host):
 
 - Windows 10, running `docker-desktop` with the `kubernetes` cluster enabled.
 
-Testing is done via `pytest`. Your machine needs a few prerequisties:
+Testing is done via `pytest`. Your machine needs a few prerequisites:
 
 - `docker` must be installed
 - `kubernetes` should be installed and speaking to a cluster that a small `helm` chart can be run on.
@@ -78,7 +78,7 @@ Testing is done via `pytest`. Your machine needs a few prerequisties:
 - Your machine's IP address should be visible from the `kubernetes` cluster. This is because the tests need some data.
   The data is downloaded into a docker container running xrootd running on your hose (or whatever `docker` is connected to).
 
-Once that is done, you can run the full `pytest` suite. It will, initally, take some time to get started as it must copy a 2 GB file locally.
+Once that is done, you can run the full `pytest` suite. It will, initially, take some time to get started as it must copy a 2 GB file locally.
 On every run the `helm` chart is re-initialized from scratch so it will take a little bit of time.
 
 # Packaging

@@ -15,7 +15,7 @@ def copy_file_to_container(container_name, file_uri, file_name):
 @pytest.fixture
 def dataset_main():
     '''
-    Get the local xrootd data server up and running, and the main dataset we use from CERNBOX downloaded
+    Get the local xrootd data server up and running, and the main dataset we use from cernbox downloaded
     '''
     name = 'func-adl-data-server'
     r = subprocess.run(['docker', 'ps', '--format', '{{.Names}}'], stdout=subprocess.PIPE)

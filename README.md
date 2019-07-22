@@ -70,6 +70,17 @@ This has been tested on (as a host):
 
 - Windows 10
 
+Testing is done via `pytest`. Your machine needs a few prerequisties:
+
+- `docker` must be installed
+- `kubernetes` should be installed and speaking to a cluster that a small `helm` chart can be run on.
+- `helm` must be installed.
+- Your machine's IP address should be visible from the `kubernetes` cluster. This is because the tests need some data.
+  The data is downloaded into a docker container running xrootd running on your hose (or whatever `docker` is connected to).
+
+Once that is done, you can run the full `pytest` suite. It will, initally, take some time to get started as it must copy a 2 GB file locally.
+On every run the `helm` chart is re-initialized from scratch so it will take a little bit of time.
+
 # Packaging
 
 To package up use `helm package func_adl_server`.

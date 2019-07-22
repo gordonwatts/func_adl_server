@@ -3,14 +3,27 @@ import subprocess
 import json
 import time
 import logging
+import pytest
 
-# Name of the chart we should get going when we run it under helm.
-chart_name = 'func-adl-testing-server'
+def copy_file_to_container(container_name, file_uri, file_name):
+    logging.info(f'Making sure the file {file_name} is local in the xrootd container.')
+    cmd = f'cd /data/xrd; if [ ! -f {file_name} ]; then wget -O {file_name}-temp {file_uri}; mv {file_name}-temp {file_name}; fi'
+    r = subprocess.run(['docker', 'exec', container_name, '/bin/bash', '-c', cmd])
+    if r.returncode != 0:
+        raise BaseException(f'Unable to docker into the xrootd container "{container_name}".')
 
-# If there is already something with this name present, then just use it.
-# For real testing this probably isn't the best, but for developing tests, etc.,
-# this will be a lot faster. Normally set to True.
-restart_if_running = True
+@pytest.fixture
+def dataset_main():
+    '''
+    Get the local xrootd data server up and running, and the main dataset we use from CERNBOX downloaded
+    '''
+    name = 'func-adl-data-server'
+    r = subprocess.run(['docker', 'ps', '--format', '{{.Names}}'], stdout=subprocess.PIPE)
+    ds = r.stdout.decode('utf-8').split('\n')
+    if name not in ds:
+        subprocess.run(['docker', 'run', '-d', "--restart", "unless-stopped", "--name", name, "-v", "func-adl-test-data:/data/xrd", '-p', '2300:1094', 'gordonwatts/func_adl_results_xrootd:latest'])
+    copy_file_to_container(name, 'https://cernbox.cern.ch/index.php/s/wzPn549ksPLK0GO/download?x-access-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcm9wX29ubHkiOmZhbHNlLCJleHAiOiIyMDE5LTA3LTIyVDIxOjQxOjUyLjAwOTEyMTI4NiswMjowMCIsImV4cGlyZXMiOjAsImlkIjoiMTkzMzM3IiwiaXRlbV90eXBlIjowLCJtdGltZSI6MTU2MzgwMjY4MCwib3duZXIiOiJnd2F0dHMiLCJwYXRoIjoiZW9zaG9tZS1nOjcwNTIxNDc5NjU3MTYwNzA0IiwicHJvdGVjdGVkIjpmYWxzZSwicmVhZF9vbmx5Ijp0cnVlLCJzaGFyZV9uYW1lIjoiREFPRF9FWE9UMTUuMTc1NDU1MTAuXzAwMDAwMS5wb29sLnJvb3QuMSIsInRva2VuIjoid3pQbjU0OWtzUExLMEdPIn0.axcjhIXDeo3wLGHJu5kZcBloN4f4SCkQ8vdzHlc8Cic', 'DAOD_EXOT15.17545510._000001.pool.root.1')
+    pass
 
 def is_chart_running(name:str):
     'Is a charge of name `name` running?'
@@ -48,16 +61,13 @@ def get_pod_status(name:str):
     data = json.loads(result.stdout)
     return [{'name': p['metadata']['name'], 'status': all([s['ready'] for s in p['status']['containerStatuses']])} for p in data['items'] if p['metadata']['name'].startswith(name)]
 
-def start_helm_chart():
+def start_helm_chart(chart_name:str, restart_if_running:bool=False):
     '''
     Start the testing chart.
 
     Returns:
         chart-name      Name of the started chart.
     '''
-    # If there is already a chart running, then we may want to leave it there.
-    global chart_name, restart_if_running
-
     if is_chart_running(chart_name) and not restart_if_running:
         logging.info(f'Decent chart with name {chart_name} already running. We can use it for testing.')
         return chart_name
@@ -75,7 +85,7 @@ def start_helm_chart():
     # Now, wait until it is up and running. The initial sleep is because if we don't, the containers
     # may not have status associated with them!
     logging.info(f'Waiting until all pods for chart {chart_name} are ready.')
-    time.sleep(20)
+    time.sleep(40)
     while True:
         time.sleep(10)
         status = get_pod_status(chart_name)
@@ -86,4 +96,21 @@ def start_helm_chart():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    print (start_helm_chart())
+    print (start_helm_chart('func-adl-testing-server'))
+
+@pytest.fixture(scope='module')
+def running_backend():
+    'Configure a backend that is up and running. Will not restart if it is running'
+    c_name = 'func-adl-testing-server'
+
+    if not is_chart_running(c_name):
+        start_helm_chart(c_name)
+    return "http://localhost:31000"
+
+@pytest.fixture(scope='module')
+def restarted_backend():
+    'Configure a backend that gets restarted if it is currently running.'
+    c_name = 'func-adl-testing-server'
+
+    start_helm_chart(c_name, restart_if_running=True)
+    return "http://localhost:31000"

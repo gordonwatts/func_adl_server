@@ -81,6 +81,21 @@ Testing is done via `pytest`. Your machine needs a few prerequisites:
 Once that is done, you can run the full `pytest` suite. It will, initially, take some time to get started as it must copy a 2 GB file locally.
 On every run the `helm` chart is re-initialized from scratch so it will take a little bit of time.
 
+There are tests that directly access the GRID. But for those to run, a certificate and similar information must be supplied. To do that, place, one
+directory above the checked out repo, a file called `func-adl-rucio-cert.yaml`. It should look like this:
+
+```
+rucio:
+  username: gwatts
+  certpass: XXXX
+  VOMS: atlas
+  local_cert_dir: /C/Users/gordo/OneDrive/.ssh/rucio-config/usercert
+```
+
+Where `certpass` is the password to access your GRID certificate file. `local_cert_dir` contains your `userkey.pem` and `usercert.pem` files.
+Note the tests that use this can take a very long time - sometimes 30 minutes if the network connection isn't good and lots of retries are
+required.
+
 # Packaging
 
 To package up use `helm package func_adl_server`.

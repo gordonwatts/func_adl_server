@@ -4,6 +4,7 @@ import json
 import time
 import logging
 import pytest
+from itertools import chain
 
 def copy_file_to_container(container_name, file_uri, file_name):
     logging.info(f'Making sure the file {file_name} is local in the xrootd container.')
@@ -61,7 +62,7 @@ def get_pod_status(name:str):
     data = json.loads(result.stdout)
     return [{'name': p['metadata']['name'], 'status': all([s['ready'] for s in p['status']['containerStatuses']])} for p in data['items'] if p['metadata']['name'].startswith(name)]
 
-def start_helm_chart(chart_name:str, restart_if_running:bool=False):
+def start_helm_chart(chart_name:str, restart_if_running:bool=False, config_files=['tests/test-default-cluster.yaml']):
     '''
     Start the testing chart.
 
@@ -77,7 +78,8 @@ def start_helm_chart(chart_name:str, restart_if_running:bool=False):
     logging.info(f'Starting chart {chart_name}.')
 
     # Start the chart now that the system is clean.
-    result = subprocess.run(['helm', 'install', '--name', chart_name, '-f', 'tests/test_params.yaml', 'func-adl-server'], stdout=subprocess.PIPE)
+    cmd = ['helm', 'install', '--name', chart_name] + list(chain.from_iterable([['-f', f] for f in config_files])) + ['func-adl-server']
+    result = subprocess.run(cmd, stdout=subprocess.PIPE)
     if result.returncode != 0:
         stop_helm_chart(chart_name)
         raise BaseException("Unable to start test helm chart")
@@ -114,3 +116,11 @@ def restarted_backend():
 
     start_helm_chart(c_name, restart_if_running=True)
     return "http://localhost:31000"
+
+@pytest.fixture
+def single_use_auth_cluster():
+    'Configure a backend that will create an authenticated cluster'
+    c_name = 'func-adl-testing-auth-server'
+    start_helm_chart(c_name, restart_if_running=True, config_files=['../func-adl-rucio-cert.yaml', 'tests/test-auth-cluster.yaml'])
+    yield "http://localhost:31005"
+    stop_helm_chart(c_name)

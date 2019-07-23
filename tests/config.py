@@ -100,7 +100,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     print (start_helm_chart('func-adl-testing-server'))
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def running_backend():
     'Configure a backend that is up and running. Will not restart if it is running'
     c_name = 'func-adl-testing-server'
@@ -109,7 +109,7 @@ def running_backend():
         start_helm_chart(c_name)
     return "http://localhost:31000"
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def restarted_backend():
     'Configure a backend that gets restarted if it is currently running.'
     c_name = 'func-adl-testing-server'

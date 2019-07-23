@@ -4,6 +4,7 @@ import json
 import time
 import logging
 import pytest
+import os
 from itertools import chain
 
 def copy_file_to_container(container_name, file_uri, file_name):
@@ -124,3 +125,8 @@ def single_use_auth_cluster():
     start_helm_chart(c_name, restart_if_running=True, config_files=['../func-adl-rucio-cert.yaml', 'tests/test-auth-cluster.yaml'])
     yield "http://localhost:31005"
     stop_helm_chart(c_name)
+
+certs_available = pytest.mark.skipif(
+    not os.path.exists('../func-adl-rucio-cert.yaml'),
+    reason='The file func-adl-rucio-cert.yaml that contains GRID cert info is not present.'
+    )

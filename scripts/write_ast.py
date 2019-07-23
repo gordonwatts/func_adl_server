@@ -12,6 +12,13 @@ def ast_jet_pt():
         .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
         .value(executor=lambda a: a)
 
+def ast_jet_bad_func():
+    return f_ds \
+        .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
+        .Select('lambda j: totlay_bogus_function(j.pt()/1000.0)') \
+        .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
+        .value(executor=lambda a: a)
+
 def ast_jet_ptt():
     return f_ds \
         .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
@@ -25,6 +32,8 @@ def generate_ast(ast_number:int):
         return ast_jet_pt()
     elif ast_number == 1:
         return ast_jet_ptt()
+    elif ast_number == 2:
+        return ast_jet_bad_func()
     else:
         raise BaseException(f'Internal error - unknown ast request number {ast_number}')
 

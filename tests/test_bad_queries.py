@@ -35,3 +35,16 @@ def test_bad_root_remote_file(dataset_main, restarted_backend):
         assert False
     except FuncADLServerException:
         return
+
+@certs_available
+def test_bad_rucio_dataset(single_use_auth_cluster):
+    'Something that fails when we try to download a dataset'
+    try:
+        EventDataset(fs_bad_rucio_ds) \
+            .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
+            .Select('lambda j: my_special_function_that_does_not_exist(j.pt())') \
+            .AsPandasDF('JetPt') \
+            .value(executor=lambda a: use_exe_func_adl_server(a, node=single_use_auth_cluster))
+        assert False
+    except FuncADLServerException:
+        return

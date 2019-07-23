@@ -12,10 +12,19 @@ def ast_jet_pt():
         .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
         .value(executor=lambda a: a)
 
+def ast_jet_ptt():
+    return f_ds \
+        .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
+        .Select('lambda j: j.ptt()/1000.0') \
+        .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
+        .value(executor=lambda a: a)
+
 def generate_ast(ast_number:int):
     'Return an ast'
     if ast_number == 0:
         return ast_jet_pt()
+    elif ast_number == 1:
+        return ast_jet_ptt()
     else:
         raise BaseException(f'Internal error - unknown ast request number {ast_number}')
 

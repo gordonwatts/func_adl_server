@@ -86,7 +86,7 @@ if ($running.Count -eq 1) {
 $running = $(docker ps -f name=as-cpp-writer)
 if ($running.Count -eq 1) {
     Write-Host 'Started as-cpp-writer'
-    docker run -d --name as-cpp-writer -v cpp_cache:/cache  gordonwatts/func_adl:latest python translate_ast_to_cpp_rabbit.py $rabbitNode $rabbitUSER $rabbitPASS 
+    docker run -d --name as-cpp-writer -v cpp_cache:/cache  gordonwatts/func_adl_cpp_writer:latest python translate_ast_to_cpp_rabbit.py $rabbitNode $rabbitUSER $rabbitPASS 
 }
 
 # The runner that will deposit the analysis in an output directory (I know, they will all overwrite, but this is good for now).

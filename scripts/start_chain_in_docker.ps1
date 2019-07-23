@@ -44,7 +44,7 @@ Write-Host Mongo IP: $mongoNode
 $running = $(docker ps -f name=as-xrootd-results)
 if ($running.Count -eq 1) {
     Write-Host 'Starting xrootd resutls'
-    New-Item -ItemType Directory -Force -Path $cache_location\results
+    $j = New-Item -ItemType Directory -Force -Path $cache_location\results
     docker run --rm -d --name as-xrootd-results -v $cache_location\results:/data/xrd -p 1094:1094 gordonwatts/func_adl_results_xrootd:latest
     $wait = $true
 }
@@ -77,7 +77,7 @@ if ($running.Count -eq 1) {
 $running = $(docker ps -f name=as-rucio-downloader)
 if ($running.Count -eq 1) {
     Write-Host 'Started as-rucio-downloader'
-    New-Item -ItemType Directory -Force -Path $cache_location\grid
+    $j = New-Item -ItemType Directory -Force -Path $cache_location\grid
     docker run -d --name as-rucio-downloader -v C:\Users\gordo\OneDrive\.ssh\2019-CERNCert:/certs -v $cache_location\grid:/data func-adl-rucio:latest /data $rabbitNode $rabbitUSER $rabbitPASS gwatts atlas $cert_pass
 }
 
@@ -93,8 +93,8 @@ if ($running.Count -eq 1) {
 $running = $(docker ps -f name=as-xaod-runner)
 if ($running.Count -eq 1) {
     Write-Host 'Started as-xaod-runner'
-    New-Item -ItemType Directory -Force -Path $cache_location\results
     docker run -d --name as-xaod-runner -v cpp_cache:/cache -v $cache_location\grid:/data -v $cache_location\results:/results  gordonwatts/func_adl_cpp_runner:latest /bin/bash -c "source /home/atlas/release_setup.sh; python cmd_runner_rabbit.py $rabbitNode $xrootdNode $rabbitUSER $rabbitPASS"
+    $j = New-Item -ItemType Directory -Force -Path $cache_location\results
 }
 
 # Finally, the web server that will run everything.

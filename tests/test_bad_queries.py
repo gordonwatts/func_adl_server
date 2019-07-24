@@ -5,8 +5,8 @@ sys.path.append(".")
 from adl_func_client.event_dataset import EventDataset
 from adl_func_client.use_exe_func_adl_server import use_exe_func_adl_server, FuncADLServerException
 
-from tests.config import restarted_backend, dataset_main
-from tests.datasets_for_tests import fs_local_test_file, fs_remote_bad_file
+from tests.config import restarted_backend, dataset_main, certs_available, single_use_auth_cluster
+from tests.datasets_for_tests import fs_local_test_file, fs_remote_bad_file, fs_bad_rucio_ds
 
 import pytest
 import os
@@ -30,6 +30,19 @@ def test_bad_root_remote_file(dataset_main, restarted_backend):
         EventDataset(fs_remote_bad_file) \
             .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
             .Select('lambda j: j.pt()/1000.0') \
+            .AsPandasDF('JetPt') \
+            .value(executor=lambda a: use_exe_func_adl_server(a, node=restarted_backend))
+        assert False
+    except FuncADLServerException:
+        return
+
+# A test ds we can access from any internet connected machine, and specify we only want to look at the first 10 events.
+def test_bad_python(dataset_main, restarted_backend):
+    'Something that fails during the python -> C++ phase'
+    try:
+        EventDataset(fs_remote_bad_file) \
+            .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
+            .Select('lambda j: my_special_function_that_does_not_exist(j.pt())') \
             .AsPandasDF('JetPt') \
             .value(executor=lambda a: use_exe_func_adl_server(a, node=restarted_backend))
         assert False

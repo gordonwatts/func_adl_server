@@ -124,7 +124,6 @@ def single_use_auth_cluster():
     c_name = 'func-adl-testing-auth-server'
     start_helm_chart(c_name, restart_if_running=True, config_files=['../func-adl-rucio-cert.yaml', 'tests/test-auth-cluster.yaml'])
     yield "http://localhost:31005"
-    stop_helm_chart(c_name)
 
 certs_available = pytest.mark.skipif(
     not os.path.exists('../func-adl-rucio-cert.yaml'),

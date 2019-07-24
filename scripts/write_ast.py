@@ -4,9 +4,17 @@ import pickle
 import sys
 
 f_ds = EventDataset(r'localds://mc16_13TeV.311309.MadGraphPythia8EvtGen_A14NNPDF31LO_HSS_LLP_mH125_mS5_ltlow.deriv.DAOD_EXOT15.e7270_e5984_s3234_r9364_r9315_p3795')
+f_ds_bad = EventDataset(r'localds://mc16_13TeV.311309.MadGraphPythia8EvtGen_A14NNPDF31LO_HSS_LLP_mH125_mS5_ltlow.deriv.DAOD_EXOT15.freak_me_out')
 
 def ast_jet_pt():
     return f_ds \
+        .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
+        .Select('lambda j: j.pt()/1000.0') \
+        .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
+        .value(executor=lambda a: a)
+
+def ast_bad_ds():
+    return f_ds_bad \
         .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
         .Select('lambda j: j.pt()/1000.0') \
         .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
@@ -34,6 +42,8 @@ def generate_ast(ast_number:int):
         return ast_jet_ptt()
     elif ast_number == 2:
         return ast_jet_bad_func()
+    elif ast_number == 3:
+        return ast_bad_ds()
     else:
         raise BaseException(f'Internal error - unknown ast request number {ast_number}')
 

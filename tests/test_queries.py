@@ -5,7 +5,7 @@ sys.path.append(".")
 from adl_func_client.event_dataset import EventDataset
 from adl_func_client.use_exe_func_adl_server import use_exe_func_adl_server
 
-from tests.config import restarted_backend, single_use_auth_cluster, dataset_main
+from tests.config import restarted_backend, single_use_auth_cluster, dataset_main, certs_available
 from tests.datasets_for_tests import fs_local_test_file, fs_small_rucio_ds
 
 import pytest
@@ -14,10 +14,10 @@ import os
 # This can take a very long time - 15-30 minutes depending on the quality of your connection.
 # If it is taking too long, most likely the problem is is the downloading - so look at the log
 # from the rucio downloader to track progress (yes, an obvious feature request).
-@pytest.mark.skipif(not os.path.exists('../func-adl-rucio-cert.yaml'), reason='The file func-adl-rucio-cert.yaml that contains GRID cert info is not present.')
+@certs_available
 def test_good_query_with_full_download(single_use_auth_cluster):
     'Run on an existing dataset'
-    r = EventDataset() \
+    r = EventDataset(fs_small_rucio_ds) \
         .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
         .Select('lambda j: j.pt()/1000.0') \
         .AsPandasDF('JetPt') \

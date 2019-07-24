@@ -12,11 +12,30 @@ The chart has the following parameters:
 | rucio.local_cert_dir | A local machine directory that contains GRID certificates (`userkey.pem` and `usercert.pem`). Required to access the GRID to download new datasets. |
 | rucio.certpass | The password to access the `userkey.pem` certificate. Required to access the GRID to download new datasets. |
 | rucio.VOMS | The VOMS that should be connected to when accessing the GRID with the given certificate. Required to access the GRID to download new datasets. |
-| rucio.local_data_cache | A `hostPath` for storing GRID data that has been downloaded. Perhaps only good for test machines. Uses the standard format for kubectl paths (e.g. `/C/Users/gordo/Documents/GRIDDS`). Not required - a `default` storage class persistent volume will be reserved if this isn't specified.
+| rucio.local_data_cache | A `hostPath` for storing GRID data that has been downloaded. Perhaps only good for test machines. Uses the standard format for kubectl paths (e.g. `/C/Users/gordo/Documents/GRIDDS`). Not required - a `default` storage class persistent volume will be reserved if this isn't specified. And the storage will be deleted if you use a `helm delete` command! |
+| images.pullPolicy | The `kubernetes` image pull policy. Defaults to blank. |
+| images.func_adl | The container that should be pulled to run the python->C++ translator. Defaults to `gordonwatts/func_adl:latest`. |
+| images.results_web_server | The container that runs the html server for results. Defaults to `nginx:stable`. |
+| images.func_adl_utils | The container that holds the ingester component, the externally facing REST api component, and the database status component. Defaults to `gordonwatts/func_adl_request_broker:latest`. |
+| images.desktop_rucio | The container that holds the rucio downloader component. Defaults to `gordonwatts/func-adl-rucio:latest`. |
+| images.xrootd_results | The container that runs the `xrootd` server. Defaults to `gordonwatts/func_adl_cpp_runner:latest`. |
+| external_interface.results_http_port | The external port that users can use http requests to get at the output `root` files. Defaults to 30002. |
+| external_interface.web_port | The port on which REST api requests are received. This is the point external clients use to submit their queries. Defaults to 30000. |
+| external_interface.node_name | The name external clients should use to get back to the `func_adl` front end. Query results are sent back as `root://` or `http://` uri's and need to contain a node address. This is where this comes from. |
+| external_interface.local_machine_prefix | If this server is running locally, and the results are mapped to a disk that is viewable by the requester, then this prefix is useful. It should be something like `file:///usr/local/results` where `/usr/local/results` have been mapped to the `rucio.local_data_cache` (see setting). Defaults to not set, in which case the query replies will not contain a `localfiles` member. All clients are written to deal with a local files coming back that isn't valid. |
+| external_interface.xrootd_port | The port on which `xrootd` accesses for files is served. Defaults to 30001. |
+| scaling.rucio_downloader | Number of simultaneous `rucio` downloader components. Defaults to 1. |
+| scaling.xaod_runner| Number of replicas of the `xAOD` -> columns container that can run simultaneously. Defaults to 1. |
+| 
+
+
 
 Some notes:
-1. If you don't specify all the `rucio.XXX` parameters you can only access the root:// datasets is possible.
-2. Bringing up the `func-adl-server` on a Docker Desktop one cluster node isn't very difficult.
+1. If you don't specify all the `rucio.XXX` parameters. If you do not then you will only be able to access files that have no permission requirements (e.g. `root://` files).
+
+### Example Local Configuration
+
+Bringing up the `func-adl-server` on a Docker Desktop one cluster node isn't very difficult.
    But since this needs a GRID security context and you don't want to lose downloads, it is
    important to configure some local storage space. Create a files called `local_setup.yaml`
    and populate it as follows (fill in everything between the "<...>" - hopefully this is 
@@ -29,20 +48,7 @@ rucio:
   username: <your-rucio-username>
   certpass: <password-to-access-your-grid-cert-files>
   VOMS: <your-voms>
-  local_data_cache: <path-to-local-storage-for-downloaded-datasets>
   local_cert_dir: <path-to-directory-with-your-userkey-and-usercert-pem--grid-cert-files>
-
-func_adl:
-  # This will keep pre-generated C++ around between invocations
-  cpp_cache: <path-to-directory-to-store-generated-cpp-files>
-  # Results of the query calculations
-  results:
-    cache: <path-to-directory-to-store-root-files-with-results-of-reduction-operation>
-    # Define this so that the web server will return a local version of the path to the results.
-    # Makes it possible to do a local file open for results. The most obvious thing is to
-    # prefix the cache with "file://" on linux/mac and "file:///" on windows. Below is an example
-    # from windows.
-    local_machine_prefix: file:///G:\testing\results\
 ```
 
 Note: For items starting with `path` (e.g. `<>`), the format is a bit odd. These are `hostPath` items in kubernetes. So:
@@ -61,9 +67,6 @@ You'll have to give it a few minutes. Especially if this is the first time you'v
 Wait until `kubectl get pod` looks healthy. You can point your web browser at `http://localhost:30000`. If all went well you should see a 404 error
 along with a dump of the `query` API command. This indicates the app is up, though other parts could still be unhealthy...
 
-K8 is not, in general, friendly to your laptop battery. I'd suggest turning it off if you aren't using it. With this app running this takes up
-almost 10% of CPU, and the CPU can't drop below about 3 GHz (turn it off and I'm down around 1.2 GHz).
-
 # Testing
 
 This has been tested on (as a host):
@@ -76,9 +79,10 @@ Testing is done via `pytest`. Your machine needs a few prerequisites:
 - `kubernetes` should be installed and speaking to a cluster that a small `helm` chart can be run on.
 - `helm` must be installed.
 - Your machine's IP address should be visible from the `kubernetes` cluster. This is because the tests need some data.
-  The data is downloaded into a docker container running xrootd running on your hose (or whatever `docker` is connected to).
+- The data is downloaded into a docker container running `xrootd` running on your
+  hose (or whatever `docker` is connected to).
 
-Once that is done, you can run the full `pytest` suite. It will, initially, take some time to get started as it must copy a 2 GB file locally.
+Once that is done, you can run the full `pytest` suite. It will, initially, take some time to get started as it must copy a 2 GB file into a `docker` volume.
 On every run the `helm` chart is re-initialized from scratch so it will take a little bit of time.
 
 There are tests that directly access the GRID. But for those to run, a certificate and similar information must be supplied. To do that, place, one
@@ -89,7 +93,7 @@ rucio:
   username: gwatts
   certpass: XXXX
   VOMS: atlas
-  local_cert_dir: /C/Users/gordo/OneDrive/.ssh/rucio-config/usercert
+  local_cert_dir: <path-to-directory-with-certs>
 ```
 
 Where `certpass` is the password to access your GRID certificate file. `local_cert_dir` contains your `userkey.pem` and `usercert.pem` files.
@@ -98,4 +102,4 @@ required.
 
 # Packaging
 
-To package up use `helm package func_adl_server`.
+When building a release, package up with `helm package func_adl_server`.

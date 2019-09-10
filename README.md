@@ -59,7 +59,7 @@ Note: For items starting with `path` (e.g. `<>`), the format is a bit odd. These
 You are now ready to start:
 
 ```
-helm install -f local_setup.yaml https://github.com/gordonwatts/func_adl_server/releases/download/0.3.0/func-adl-server-0.3.0.tgz
+helm install -f local_setup.yaml https://github.com/gordonwatts/func_adl_server/releases/download/0.4.0/func-adl-server-0.4.0.tgz
 ```
 
 You'll have to give it a few minutes. Especially if this is the first time you've run it (it has a bunch of data to pull from docker hub).

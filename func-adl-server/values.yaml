@@ -25,6 +25,8 @@ mongodb:
 rabbitmq:
   rabbitmq:
     password: leftfoot1
+  persistence:
+    enabled: false
 
 # The default container tags used to power this.
 # Pull policy translates to the usual Kubernetes policy.

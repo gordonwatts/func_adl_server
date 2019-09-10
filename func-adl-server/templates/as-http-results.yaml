@@ -29,7 +29,12 @@ spec:
           volumeMounts:
             - mountPath: /usr/share/nginx/html
               name: xrootd-cache
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-cfg
       volumes:
         - name: xrootd-cache
           persistentVolumeClaim:
             claimName: {{ template "func-adl-server.fullname" . }}-results
+        - name: nginx-cfg
+          configMap:
+            name:  {{ template "func-adl-server.fullname" . }}-http-config

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "func-adl-server.fullname" . }}-http-config
+  labels:
+    app: {{ template "func-adl-server.name" . }}
+    chart: {{ template "func-adl-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  default.conf: |
+    server {
+      listen       80;
+      server_name  localhost;
+
+      location / {
+          root   /usr/share/nginx/html;
+          index  index.html index.htm;
+      }
+
+      location /query {
+        proxy_pass http://{{ .Release.Name }}-web:8000/query;
+      }
+
+      # redirect server error pages to the static page /50x.html
+      error_page   500 502 503 504  /50x.html;
+      location = /50x.html {
+          root   /usr/share/nginx/html;
+      }
+    }

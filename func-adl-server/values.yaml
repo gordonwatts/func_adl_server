@@ -5,7 +5,6 @@ external_interface:
   node_name: localhost
   # Expose xrootd with our results on these ports externally (first is for xrootd, second is http access)
   xrootd_port: 30001
-  results_http_port: 30002
   # Expose web service where queries are submitted
   web_port: 30000
 

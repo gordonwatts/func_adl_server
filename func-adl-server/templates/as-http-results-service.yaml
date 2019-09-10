@@ -13,7 +13,7 @@ spec:
   ports:
     - name: http
       port: 80
-      nodePort: {{ .Values.external_interface.results_http_port }}
+      nodePort: {{ .Values.external_interface.web_port }}
       protocol: TCP
   selector:
     app: {{ template "func-adl-server.name" . }}-http-results

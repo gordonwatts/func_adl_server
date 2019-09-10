@@ -2,5 +2,4 @@
 # Use a custom port in case it is running with something else on the same machine!
 external_interface:
   xrootd_port: 31006
-  results_http_port: 31007
   web_port: 31005

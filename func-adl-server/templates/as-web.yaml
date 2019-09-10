@@ -54,4 +54,4 @@ spec:
               value: {{ .Values.external_interface.local_machine_prefix }}
 {{- end }}           
             - name: HTTP_PREFIX
-              value: http://{{ .Values.external_interface.node_name}}:{{ .Values.external_interface.results_http_port }}/
+              value: http://{{ .Values.external_interface.node_name}}:{{ .Values.external_interface.web_port }}/

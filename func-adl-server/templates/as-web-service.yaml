@@ -9,11 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 8000
-      nodePort: {{ .Values.external_interface.web_port }}
-      targetPort: 8000
       protocol: TCP
   selector:
     app: {{ template "func-adl-server.name" . }}-web

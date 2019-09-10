@@ -1,4 +1,7 @@
-# The xROOTT server needs to be declared as a service for this puppy to work.
+# Serve the root file results over http
+# If there is no ingester then you can tied this to an exteral_ip by defining that. It will
+# only be port 80 if that happens.
+#
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,12 +12,21 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+{{- if .Values.external_interface.external_ip }}
+  type: ClusterIP
+{{- else }}
   type: NodePort
+{{- end }}
   ports:
     - name: http
       port: 80
+{{- if not .Values.external_interface.external_ip }}
       nodePort: {{ .Values.external_interface.web_port }}
+{{- end }}
       protocol: TCP
+{{- if .Values.external_interface.external_ip }}
+  externalIPs: [ {{ .Values.external_interface.external_ip }} ]
+{{- end}}
   selector:
     app: {{ template "func-adl-server.name" . }}-http-results
     release: {{ .Release.Name }}

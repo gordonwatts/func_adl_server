@@ -101,4 +101,4 @@ required.
 
 # Packaging
 
-When building a release, package up with `helm package func_adl_server`.
+When building a release, package up with `helm package func-adl-server`.

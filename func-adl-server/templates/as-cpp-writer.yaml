@@ -1,5 +1,4 @@
-# Writes the CPP files to a local cache - eventually will hold binary files (I hope)... then we don't
-# need to do it this way.
+# Generates the C++ files, and sends a zipped archive of everything that is needed to run to the runner via rabbit.
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -38,10 +37,3 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-rabbitmq
                   key: rabbitmq-password
-          volumeMounts:
-            - mountPath: /cache
-              name: cpp-cache
-      volumes:
-        - name: cpp-cache
-          persistentVolumeClaim:
-            claimName: {{ template "func-adl-server.fullname" . }}-cpp-cache

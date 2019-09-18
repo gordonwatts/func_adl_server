@@ -5,6 +5,7 @@ import pika
 import os
 import pickle
 import uuid
+import ast
 
 done = False
 corr_id = None

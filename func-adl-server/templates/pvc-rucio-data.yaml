@@ -1,5 +1,4 @@
-# The PVC for the C++ code cache
-# This should have the same lifetime as the mongo-db has... If that is deleted or reset, then this should be as well.
+# The PVC for the downloaded rucio data - which can be quite large!
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

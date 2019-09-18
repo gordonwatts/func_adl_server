@@ -29,6 +29,7 @@ rabbitmq:
 
 # The default container tags used to power this.
 # Pull policy translates to the usual Kubernetes policy.
+# Use IfNotPresent if you want to use an image already on the machine.
 images:
   pullPolicy:
   func_adl: gordonwatts/func_adl:latest

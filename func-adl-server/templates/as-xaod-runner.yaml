@@ -36,14 +36,9 @@ spec:
                   name: {{ .Release.Name }}-rabbitmq
                   key: rabbitmq-password
           volumeMounts:
-            - mountPath: /cache
-              name: cpp-cache
             - mountPath: /data
               name: rucio-data
       volumes:
-        - name: cpp-cache
-          persistentVolumeClaim:
-            claimName: {{ template "func-adl-server.fullname" . }}-cpp-cache
         - name: rucio-data
 {{- if .Values.rucio.local_data_cache }}
           hostPath:

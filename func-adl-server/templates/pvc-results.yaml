@@ -1,4 +1,4 @@
-# The PVC for the C++ code cache
+# The PVC for theh output/results of a transform.
 # This should have the same lifetime as the mongo-db has... If that is deleted or reset, then this should be as well.
 kind: PersistentVolumeClaim
 apiVersion: v1

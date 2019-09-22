@@ -32,5 +32,13 @@
         "xaod",
         "xrootd"
     ],
-    "python.testing.autoTestDiscoverOnSaveEnabled": false
+    "python.testing.autoTestDiscoverOnSaveEnabled": false,
+    "python.analysis.memory.keepLibraryAst": true,
+    "python.analysis.memory.keepLibraryLocalVariables": true,
+    "python.analysis.openFilesOnly": false,
+    "python.linting.flake8Enabled": true,
+    "python.testing.pytestEnabled": true,
+    "python.linting.flake8Args": [
+        "--ignore=E501"
+    ]
 }

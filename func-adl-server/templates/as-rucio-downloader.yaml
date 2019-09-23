@@ -3,7 +3,7 @@
 #
 # User certs are loaded into the cluster as secrets. And then referenced below.
 #
-# kubectl create secret generic gwatts-atlas --from-file="H:\OneDrive\.ssh\rucio-config\usercert\usercert.pem" --from-file="H:\OneDrive\.ssh\rucio-config\usercert\userkey.pem"
+# kubectl create secret generic gwatts-atlas --from-literal=VOMS=xxx --from-literal=username=xxx --from-literal=certpass=xxx --from-file="H:\OneDrive\.ssh\rucio-config\usercert\usercert.pem" --from-file="H:\OneDrive\.ssh\rucio-config\usercert\userkey.pem"
 #
 apiVersion: apps/v1beta2
 kind: Deployment
@@ -36,10 +36,10 @@ spec:
             - {{ .Release.Name }}-rabbitmq
             - user
             - RABBITMQ_PASSWORD
-{{- if and .Values.rucio.username .Values.rucio.VOMS .Values.rucio.certpass .Values.rucio.cert_secret_name }}
-            - {{ .Values.rucio.username }}
-            - {{ .Values.rucio.VOMS }}
-            - {{ .Values.rucio.certpass }}
+{{- if and .Values.rucio.cert_secret_name }}
+            - CERTUSERNAME
+            - CERTVOMS
+            - CERTPASSWORD
 {{- end }}
           env:
             - name: RABBITMQ_PASSWORD
@@ -47,6 +47,23 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-rabbitmq
                   key: rabbitmq-password
+{{- if and .Values.rucio.cert_secret_name }}
+            - name: CERTUSERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rucio.cert_secret_name }}
+                  key: username
+            - name: CERTPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rucio.cert_secret_name }}
+                  key: certpass
+            - name: CERTVOMS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rucio.cert_secret_name }}
+                  key: VOMS
+{{- end }}
           volumeMounts:
 {{- if .Values.rucio.cert_secret_name }}
             - mountPath: /certs
@@ -67,5 +84,10 @@ spec:
         - name: certs
           secret:
             secretName: {{ .Values.rucio.cert_secret_name }}
+            items:
+              - key: userkey.pem
+                path: userkey.pem
+              - key: usercert.pem
+                path: usercert.pem
 {{- end }}
 

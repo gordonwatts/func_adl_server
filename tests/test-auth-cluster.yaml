@@ -3,3 +3,6 @@
 external_interface:
   xrootd_port: 31006
   web_port: 31005
+
+images:
+  pullPolicy: IfNotPresent

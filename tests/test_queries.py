@@ -1,15 +1,8 @@
 # A number of queries that test that the system works pretty well.
-import sys
-sys.path.append(".")
-
 from adl_func_client.event_dataset import EventDataset
 from adl_func_client.use_exe_func_adl_server import use_exe_func_adl_server
-
-from tests.config import restarted_backend, single_use_auth_cluster, dataset_main, certs_available
+from tests.config import single_use_auth_cluster, dataset_main, certs_available, restarted_backend
 from tests.datasets_for_tests import fs_local_test_file, fs_small_rucio_ds
-
-import pytest
-import os
 
 # This can take a very long time - 15-30 minutes depending on the quality of your connection.
 # If it is taking too long, most likely the problem is is the downloading - so look at the log
@@ -23,6 +16,7 @@ def test_good_query_with_full_download(single_use_auth_cluster):
         .AsPandasDF('JetPt') \
         .value(executor=lambda a: use_exe_func_adl_server(a, node=single_use_auth_cluster))
     assert len(r) == 356159
+
 
 # A test ds we can access from any internet connected machine, and specify we only want to look at the first 10 events.
 def test_good_query(dataset_main, restarted_backend):

@@ -129,12 +129,18 @@ def restarted_backend():
 
 
 @pytest.fixture
-def single_use_auth_cluster():
-    'Configure a backend that will create an authenticated cluster'
+def single_use_auth_cluster_restart():
+    'Configure a backend that will create an authenticated cluster, making sure it is clean'
     c_name = 'func-adl-testing-auth-server'
     start_helm_chart(c_name, restart_if_running=True, config_files=['../func-adl-rucio-cert.yaml', 'tests/test-auth-cluster.yaml'])
     yield "http://localhost:31005"
 
+@pytest.fixture
+def single_use_auth_cluster():
+    'Configure a backend that will create an authenticated cluster - re-use one that is already there'
+    c_name = 'func-adl-testing-auth-server'
+    start_helm_chart(c_name, restart_if_running=False, config_files=['../func-adl-rucio-cert.yaml', 'tests/test-auth-cluster.yaml'])
+    yield "http://localhost:31005"
 
 certs_available = pytest.mark.skipif(
     not os.path.exists('../func-adl-rucio-cert.yaml'),

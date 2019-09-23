@@ -1,5 +1,10 @@
 # Initial request from outside world arrives on rabbitmq. We figure out we have the answer, and if
 # not we pass it on to the next step and update the db and let the caller know it is pending.
+#
+# User certs are loaded into the cluster as secrets. And then referenced below.
+#
+# kubectl create secret generic gwatts-atlas --from-file="H:\OneDrive\.ssh\rucio-config\usercert\usercert.pem" --from-file="H:\OneDrive\.ssh\rucio-config\usercert\userkey.pem"
+#
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -31,7 +36,7 @@ spec:
             - {{ .Release.Name }}-rabbitmq
             - user
             - RABBITMQ_PASSWORD
-{{- if and .Values.rucio.username .Values.rucio.VOMS .Values.rucio.certpass .Values.rucio.local_cert_dir }}
+{{- if and .Values.rucio.username .Values.rucio.VOMS .Values.rucio.certpass .Values.rucio.cert_secret_name }}
             - {{ .Values.rucio.username }}
             - {{ .Values.rucio.VOMS }}
             - {{ .Values.rucio.certpass }}
@@ -43,7 +48,7 @@ spec:
                   name: {{ .Release.Name }}-rabbitmq
                   key: rabbitmq-password
           volumeMounts:
-{{- if .Values.rucio.local_cert_dir }}
+{{- if .Values.rucio.cert_secret_name }}
             - mountPath: /certs
               name: certs
 {{- end }}
@@ -58,8 +63,9 @@ spec:
           persistentVolumeClaim:
             claimName: {{ template "func-adl-server.fullname" . }}-rucio-data
 {{- end }}
-{{- if .Values.rucio.local_cert_dir }}
+{{- if .Values.rucio.cert_secret_name }}
         - name: certs
-          hostPath:
-            path: {{ .Values.rucio.local_cert_dir }}
+          secret:
+            secretName: {{ .Values.rucio.cert_secret_name }}
 {{- end }}
+

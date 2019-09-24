@@ -8,10 +8,7 @@ The chart has the following parameters:
 
 | Parameter Name | Description |
 | -------------- | ----------- |
-| rucio.username | The `rucio` username for accessing the grid. Required to access the GRID to download new datasets. |
-| rucio.local_cert_dir | A local machine directory that contains GRID certificates (`userkey.pem` and `usercert.pem`). Required to access the GRID to download new datasets. |
-| rucio.certpass | The password to access the `userkey.pem` certificate. Required to access the GRID to download new datasets. |
-| rucio.VOMS | The VOMS that should be connected to when accessing the GRID with the given certificate. Required to access the GRID to download new datasets. |
+| rucio.cert_secret_name | Name of a kubernetes `secret` that holds the GRID certificates (`userkey.pem` and `usercert.pem`), VOMS, username and password. Required to access the GRID to download new datasets. See section below for creating the secret properly. |
 | rucio.local_data_cache | A `hostPath` for storing GRID data that has been downloaded. Perhaps only good for test machines. Uses the standard format for kubectl paths (e.g. `/C/Users/gordo/Documents/GRIDDS`). Not required - a `default` storage class persistent volume will be reserved if this isn't specified. And the storage will be deleted if you use a `helm delete` command! |
 | images.pullPolicy | The `kubernetes` image pull policy. Defaults to blank. |
 | images.func_adl | The container that should be pulled to run the python->C++ translator. Defaults to `gordonwatts/func_adl:latest`. |
@@ -28,11 +25,27 @@ The chart has the following parameters:
 | 
 
 
-
 Some notes:
 1. If you don't specify all the `rucio.XXX` parameters. If you do not then you will only be able to access files that have no permission requirements (e.g. `root://` files).
 
-### Example Local Configuration
+## Establishing the secret for server authentication on the GRID
+
+To access files on the grid a secret in the cluster is required. The following command can be used to create the secret:
+
+```
+kubectl create secret generic <secret-name> --from-literal=VOMS=<voms> --from-literal=username=<username> --from-literal=certpass=<password> --from-file=<path-to-usercert.pem> --from-file=<path-to-userkey.pem>
+```
+
+Where:
+
+- `secret-name` - The name of the secret in the kubernetes cluster. Enter this name in the helm chart config under `rucio.cert_secret_name`.
+- `voms` - The name of your Virtual Organization (e.g. `atlas`).
+- `username` - the rucio username
+- `password` - the password to unlock the certificate
+- `path-to-usercert.pem` - Location of the .pem file that contains the user certificate. K8 will encode this file and put its data into the secret.
+- `path-to-userkey.pem` - The key portion of the key-pair.
+
+## Example Local Configuration
 
 Bringing up the `func-adl-server` on a Docker Desktop one cluster node isn't very difficult.
    But since this needs a GRID security context and you don't want to lose downloads, it is
@@ -44,9 +57,6 @@ Bringing up the `func-adl-server` on a Docker Desktop one cluster node isn't ver
 # Some not-to-be-shared info to run the service.
 
 rucio:
-  username: <your-rucio-username>
-  certpass: <password-to-access-your-grid-cert-files>
-  VOMS: <your-voms>
   local_cert_dir: <path-to-directory-with-your-userkey-and-usercert-pem--grid-cert-files>
 ```
 
@@ -89,15 +99,27 @@ directory above the checked out repo, a file called `func-adl-rucio-cert.yaml`. 
 
 ```
 rucio:
-  username: gwatts
-  certpass: XXXX
-  VOMS: atlas
-  local_cert_dir: <path-to-directory-with-certs>
+  cert_secret_name: grid-cert-secret
 ```
 
-Where `certpass` is the password to access your GRID certificate file. `local_cert_dir` contains your `userkey.pem` and `usercert.pem` files.
-Note the tests that use this can take a very long time - sometimes 30 minutes if the network connection isn't good and lots of retries are
-required.
+Where `grid-cert-secret` is the name of the K8 secret you put into place with the above `kubectl` command.
+Note the tests that use this can take a very long time - sometimes 30 minutes if the network connection isn't good and lots of retries are required.
+
+## Timing Tests
+
+If you want to run some timing tests you can fairly easily with the following commmand:
+
+```
+pytest -k "test_good_" --durations=0
+```
+
+This runs three tests:
+
+1. Download a 6 GB file and run a single column query
+1. Use the previously downloaded file and extract a new column.
+1. Use the same query to re-fetch an already existing column.
+
+And it will print out the timing so that you can see about how long it took to do each of these tests. When `pytest` prints the timings, it will print setup times as well - ignore these. Setup is expensive as the system has to wait for the `helm` chart to be fully up before it can start the tests.
 
 # Packaging
 

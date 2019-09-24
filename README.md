@@ -57,6 +57,7 @@ Bringing up the `func-adl-server` on a Docker Desktop one cluster node isn't ver
 # Some not-to-be-shared info to run the service.
 
 rucio:
+  cert_secret_name: <grid-secret-name>
   local_cert_dir: <path-to-directory-with-your-userkey-and-usercert-pem--grid-cert-files>
 ```
 

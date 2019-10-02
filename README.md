@@ -58,7 +58,7 @@ Bringing up the `func-adl-server` on a Docker Desktop one cluster node isn't ver
 
 rucio:
   cert_secret_name: <grid-secret-name>
-  local_cert_dir: <path-to-directory-with-your-userkey-and-usercert-pem--grid-cert-files>
+  local_data_cache: <path-to-where-stuff-from-the-grid-can-be-downloaded>
 ```
 
 Note: For items starting with `path` (e.g. `<>`), the format is a bit odd. These are `hostPath` items in kubernetes. So:
@@ -74,8 +74,7 @@ helm install -f local_setup.yaml https://github.com/gordonwatts/func_adl_server/
 ```
 
 You'll have to give it a few minutes. Especially if this is the first time you've run it (it has a bunch of data to pull from docker hub).
-Wait until `kubectl get pod` looks healthy. You can point your web browser at `http://localhost:30000`. If all went well you should see a 404 error
-along with a dump of the `query` API command. This indicates the app is up, though other parts could still be unhealthy...
+Wait until `kubectl get pod` looks healthy. You can point your web browser at `http://localhost:30000`. If all went well you should see a 404 error. This indicates the app is up, though other parts could still be unhealthy...
 
 # Testing
 
@@ -108,7 +107,7 @@ Note the tests that use this can take a very long time - sometimes 30 minutes if
 
 ## Timing Tests
 
-If you want to run some timing tests you can fairly easily with the following commmand:
+If you want to run some timing tests you can fairly easily with the following command:
 
 ```
 pytest -k "test_good_" --durations=0
@@ -117,11 +116,11 @@ pytest -k "test_good_" --durations=0
 This runs three tests:
 
 1. Download a 6 GB file and run a single column query
-1. Use the previously downloaded file and extract a new column.
-1. Use the same query to re-fetch an already existing column.
+2. Use the previously downloaded file and extract a new column.
+3. Use the same query to re-fetch an already existing column.
 
 And it will print out the timing so that you can see about how long it took to do each of these tests. When `pytest` prints the timings, it will print setup times as well - ignore these. Setup is expensive as the system has to wait for the `helm` chart to be fully up before it can start the tests.
 
 # Packaging
 
-When building a release, package up with `helm package func-adl-server`.
+When building a release, package up with `helm package func-adl-server`. Make sure to bump the version number in the `Chart` file!

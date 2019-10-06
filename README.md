@@ -16,6 +16,7 @@ The chart has the following parameters:
 | images.func_adl_utils | The container that holds the ingester component, the externally facing REST api component, and the database status component. Defaults to `gordonwatts/func_adl_request_broker:latest`. |
 | images.desktop_rucio | The container that holds the rucio downloader component. Defaults to `gordonwatts/func-adl-rucio:latest`. |
 | images.xrootd_results | The container that runs the `xrootd` server. Defaults to `gordonwatts/func_adl_cpp_runner:latest`. |
+| images.func_adl_xcache | The container that runs the internal `xcache` server. Defaults to `gordonwatts/func_adl_xcache:latest`. |
 | external_interface.web_port | The port on which REST api requests are received. This is the point external clients use to submit their queries. Defaults to 30000. |
 | external_interface.node_name | The name external clients should use to get back to the `func_adl` front end. Query results are sent back as `root://` or `http://` uri's and need to contain a node address. This is where this comes from. |
 | external_interface.local_machine_prefix | If this server is running locally, and the results are mapped to a disk that is viewable by the requester, then this prefix is useful. It should be something like `file:///usr/local/results` where `/usr/local/results` have been mapped to the `rucio.local_data_cache` (see setting). Defaults to not set, in which case the query replies will not contain a `localfiles` member. All clients are written to deal with a local files coming back that isn't valid. |
@@ -110,7 +111,7 @@ Note the tests that use this can take a very long time - sometimes 30 minutes if
 If you want to run some timing tests you can fairly easily with the following command:
 
 ```
-pytest -k "test_good_" --durations=0
+pytest -k "test_query_" --durations=0
 ```
 
 This runs three tests:

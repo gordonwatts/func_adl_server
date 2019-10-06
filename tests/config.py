@@ -10,7 +10,6 @@ import tempfile
 import yaml
 from urllib.parse import urlparse
 
-
 def copy_file_to_container(container_name, file_uri, file_name):
     logging.info(f'Making sure the file {file_name} is local in the xrootd container.')
     cmd = f'cd /data/xrd; if [ ! -f {file_name} ]; then wget -O {file_name}-temp {file_uri}; mv {file_name}-temp {file_name}; fi'
@@ -97,9 +96,10 @@ def _fetch_cluster_head_node():
         t.write(result.stdout)
         t.seek(0)
         data = yaml.safe_load(t)
-        if len(data['clusters']) != 1:
-            raise BaseException('Do not know how to deal with multiple clusters')
-        head_url = data['clusters'][0]['cluster']['server']
+        context_name = data['current-context']
+        cluster_name = [c for c in data['contexts'] if c['name'] == context_name][0]['context']['cluster']
+        cluster = [c for c in data['clusters'] if c['name'] == cluster_name][0]
+        head_url = cluster['cluster']['server']
         host = urlparse(head_url).hostname
         return 'localhost' if host == 'kubernetes.docker.internal' else host
 

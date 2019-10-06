@@ -1,53 +1,40 @@
-# Initial request from outside world arrives on rabbitmq. We figure out we have the answer, and if
-# not we pass it on to the next step and update the db and let the caller know it is pending.
-#
-# User certs are loaded into the cluster as secrets. And then referenced below.
-#
-# kubectl create secret generic gwatts-atlas --from-literal=VOMS=xxx --from-literal=username=xxx --from-literal=certpass=xxx --from-file="H:\OneDrive\.ssh\rucio-config\usercert\usercert.pem" --from-file="H:\OneDrive\.ssh\rucio-config\usercert\userkey.pem"
-#
-apiVersion: apps/v1beta2
+# Run a simple version of rabbitmq
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "func-adl-server.fullname" . }}-rucio-downloader
+  name: {{ template "func-adl-server.fullname" . }}-xcache
   labels:
     app: {{ template "func-adl-server.name" . }}
     chart: {{ template "func-adl-server.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.scaling.rucio_dwonloader }}
+  replicas: 1
   selector:
     # Why do I have to repeat this - this seems crazy do this twice here. Three times in one file...
     matchLabels:
-      app: {{ template "func-adl-server.name" . }}-rucio-downloader
+      app: {{ template "func-adl-server.name" . }}-xcache
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "func-adl-server.name" . }}-rucio-downloader
+        app: {{ template "func-adl-server.name" . }}-xcache
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: {{ .Values.images.desktop_rucio }}
+        - name: as-xcache
+          image: {{ .Values.images.func_adl_xcache }}
           imagePullPolicy: {{ .Values.images.pullPolicy }}
+          cports:
+            - name: xrootd
+              containerPort: 1094
           args:
-            - /data
-            - {{ .Release.Name }}-xcache
-            - {{ .Release.Name }}-rabbitmq
-            - user
-            - RABBITMQ_PASSWORD
 {{- if and .Values.rucio.cert_secret_name }}
             - CERTUSERNAME
             - CERTVOMS
             - CERTPASSWORD
 {{- end }}
           env:
-            - name: RABBITMQ_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-rabbitmq
-                  key: rabbitmq-password
 {{- if and .Values.rucio.cert_secret_name }}
             - name: CERTUSERNAME
               valueFrom:
@@ -70,17 +57,7 @@ spec:
             - mountPath: /certs
               name: certs
 {{- end }}
-            - mountPath: /data
-              name: rucio-data
       volumes:
-        - name: rucio-data
-{{- if .Values.rucio.local_data_cache }}
-          hostPath:
-            path: {{ .Values.rucio.local_data_cache }}
-{{- else }}
-          persistentVolumeClaim:
-            claimName: {{ template "func-adl-server.fullname" . }}-rucio-data
-{{- end }}
 {{- if .Values.rucio.cert_secret_name }}
         - name: certs
           secret:
@@ -91,4 +68,3 @@ spec:
               - key: usercert.pem
                 path: usercert.pem
 {{- end }}
-

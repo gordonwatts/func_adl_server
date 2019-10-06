@@ -4,7 +4,9 @@ import pickle
 import sys
 
 f_ds = EventDataset(r'localds://mc16_13TeV.311309.MadGraphPythia8EvtGen_A14NNPDF31LO_HSS_LLP_mH125_mS5_ltlow.deriv.DAOD_EXOT15.e7270_e5984_s3234_r9364_r9315_p3795')
+f_ds_remote = EventDataset(r'cacheds://mc16_13TeV.311309.MadGraphPythia8EvtGen_A14NNPDF31LO_HSS_LLP_mH125_mS5_ltlow.deriv.DAOD_EXOT15.e7270_e5984_s3234_r9364_r9315_p3795')
 f_ds_bad = EventDataset(r'localds://mc16_13TeV.311309.MadGraphPythia8EvtGen_A14NNPDF31LO_HSS_LLP_mH125_mS5_ltlow.deriv.DAOD_EXOT15.freak_me_out')
+
 
 def ast_jet_pt():
     return f_ds \
@@ -13,12 +15,22 @@ def ast_jet_pt():
         .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
         .value(executor=lambda a: a)
 
+
+def ast_jet_pt_remote():
+    return f_ds_remote \
+        .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
+        .Select('lambda j: j.pt()/1000.0') \
+        .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
+        .value(executor=lambda a: a)
+
+
 def ast_bad_ds():
     return f_ds_bad \
         .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
         .Select('lambda j: j.pt()/1000.0') \
         .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
         .value(executor=lambda a: a)
+
 
 def ast_jet_bad_func():
     return f_ds \
@@ -27,12 +39,14 @@ def ast_jet_bad_func():
         .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
         .value(executor=lambda a: a)
 
+
 def ast_jet_ptt():
     return f_ds \
         .SelectMany('lambda e: e.Jets("AntiKt4EMTopoJets")') \
         .Select('lambda j: j.ptt()/1000.0') \
         .AsROOTTTree('output.root', 'dudetree', 'JetPt') \
         .value(executor=lambda a: a)
+
 
 def generate_ast(ast_number:int):
     'Return an ast'
@@ -44,14 +58,18 @@ def generate_ast(ast_number:int):
         return ast_jet_bad_func()
     elif ast_number == 3:
         return ast_bad_ds()
+    elif ast_number == 4:
+        return ast_jet_pt_remote()
     else:
         raise BaseException(f'Internal error - unknown ast request number {ast_number}')
+
 
 def write_ast (ast_number:int, output_filename: str):
     'Write an ast'
     a = generate_ast(ast_number)
     with open(output_filename, 'wb') as f:
         pickle.dump(a, f)
+
 
 if __name__ == '__main__':
     bad_args = False
@@ -65,4 +83,3 @@ if __name__ == '__main__':
         print ("       0 - Simple jet pt from ATLAS xAOD")
     else:
         write_ast(int(sys.argv[1]), sys.argv[2])
-

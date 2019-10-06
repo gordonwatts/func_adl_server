@@ -1,0 +1,19 @@
+# Allow internal access to xcache, and root from there.#
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "func-adl-server.fullname" . }}-xcache
+  labels:
+    app: {{ template "func-adl-server.name" . }}
+    chart: {{ template "func-adl-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+    - name: root
+      port: 1094
+      protocol: TCP
+  selector:
+    app: {{ template "func-adl-server.name" . }}-xcache
+    release: {{ .Release.Name }}

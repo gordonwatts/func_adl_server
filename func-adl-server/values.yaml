@@ -34,7 +34,7 @@ images:
   pullPolicy:
   func_adl: gordonwatts/func_adl:1.0.0
   desktop_rucio: gordonwatts/func-adl-rucio:1.0.0
-  func_adl_xcache: gordonwatts/func-adl-rucion2n:1.0.1
+  func_adl_xcache: gordonwatts/func-adl-rucion2n:1.0.2
   func_adl_utils: gordonwatts/func_adl_request_broker:1.0.0
   xrootd_results: gordonwatts/func_adl_results_xrootd:1.0.0
   xaod_runner: gordonwatts/func_adl_cpp_runner:1.0.0

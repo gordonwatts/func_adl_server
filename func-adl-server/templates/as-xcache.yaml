@@ -57,6 +57,8 @@ spec:
             - mountPath: /certs
               name: certs
 {{- end }}
+            - mountPath: /data
+              name: xcache-data
       volumes:
 {{- if .Values.rucio.cert_secret_name }}
         - name: certs
@@ -68,3 +70,12 @@ spec:
               - key: usercert.pem
                 path: usercert.pem
 {{- end }}
+        - name: xcache-data
+{{- if .Values.rucio.xcache_data_cache }}
+          hostPath:
+            path: {{ .Values.rucio.xcache_data_cache }}
+{{- else }}
+          persistentVolumeClaim:
+            claimName: {{ template "func-adl-server.fullname" . }}-xcache-data
+{{- end }}
+

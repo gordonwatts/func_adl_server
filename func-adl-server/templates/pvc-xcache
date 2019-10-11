@@ -1,0 +1,16 @@
+# The PVC for the downloaded xcache data - which can be quite large!
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  labels:
+    app: {{ template "func-adl-server.name" . }}
+    chart: {{ template "func-adl-server.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "func-adl-server.fullname" . }}-xcache-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi

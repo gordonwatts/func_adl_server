@@ -71,6 +71,9 @@ spec:
                 path: usercert.pem
 {{- end }}
         - name: xcache-data
+{{- if .Values.rucio.xcache_internal }}
+          emptyDir: {}
+{{- else }}
 {{- if .Values.rucio.xcache_data_cache }}
           hostPath:
             path: {{ .Values.rucio.xcache_data_cache }}
@@ -78,4 +81,4 @@ spec:
           persistentVolumeClaim:
             claimName: {{ template "func-adl-server.fullname" . }}-xcache-data
 {{- end }}
-
+{{- end }}

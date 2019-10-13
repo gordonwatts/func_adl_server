@@ -6,3 +6,6 @@ external_interface:
 
 # images:
 #   pullPolicy: IfNotPresent
+
+rucio:
+  xcache_internal: yes

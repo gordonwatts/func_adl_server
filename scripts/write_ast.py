@@ -1,5 +1,5 @@
 # Testing helper. Create an AST for a query and write it out to a final in a pickle format.
-from adl_func_client.event_dataset import EventDataset
+from func_adl import EventDataset
 import pickle
 import sys
 

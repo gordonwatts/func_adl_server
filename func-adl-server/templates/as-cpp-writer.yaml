@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: {{ .Values.images.func_adl }}
+          image: {{ .Values.images.cpp_writer }}
           imagePullPolicy: {{ .Values.images.pullPolicy }}
           command:
             - python

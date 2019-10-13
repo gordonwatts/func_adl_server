@@ -10,6 +10,7 @@ import tempfile
 import yaml
 from urllib.parse import urlparse
 
+
 def copy_file_to_container(container_name, file_uri, file_name):
     logging.info(f'Making sure the file {file_name} is local in the xrootd container.')
     cmd = f'cd /data/xrd; if [ ! -f {file_name} ]; then wget -O {file_name}-temp {file_uri}; mv {file_name}-temp {file_name}; fi'
@@ -85,6 +86,7 @@ def _fetch_kube_node_ip():
     if len(internal_address) == 0:
         raise BaseException('No internal ip address for us to use!')
     return internal_address[0]['address']
+
 
 def _fetch_cluster_head_node():
     '''

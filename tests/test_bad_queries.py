@@ -1,8 +1,10 @@
 # A number of queries that test that the system works pretty well.
 from func_adl import EventDataset
 from func_adl.xAOD import use_exe_func_adl_server, FuncADLServerException
+import sys
+sys.path += ['.']
 from tests.config import restarted_backend, dataset_main, certs_available, single_use_auth_cluster  # noqa E401
-from tests.datasets_for_tests import fs_local_test_file, fs_remote_bad_file, fs_bad_rucio_ds
+from tests.datasets_for_tests import fs_local_test_file, fs_remote_bad_file, fs_bad_rucio_ds  # noqa E401
 
 def test_bad_jet_member_reference(dataset_main, restarted_backend):  # noqa E811
     'Something that is caught at the compile stage'
